@@ -33,7 +33,7 @@ class Paddle(object):
 		self.rect = rect(self.screen, self.color, self.rectlist, self.outline)
 	# update coordinates
 	def change(self):
-		if (self.newy != self.rectlist[1]):
+		if (abs(self.newy-self.rectlist[1])>4):
 			self.rectlist = [self.rectlist[0], self.rectlist[1]+self.diff, self.rectlist[2], self.rectlist[3]]
 		self.draw()
 	def move(self, newy):
