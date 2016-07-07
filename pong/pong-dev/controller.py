@@ -120,7 +120,7 @@ class Controller(object):
                                       nui.ImageType.Color)
 	# method that returns everything to its original position
 	def set(self):
-		self.level = 8
+		self.level = 6
 		self.midline = Line(self.game.screen, self.color['line'], (self.game_middle_x, 0), (self.game_middle_x, self.game.screensize[1]), 4)
 		self.midline.draw()
 		self.midcircle = Circle(self.game.screen, self.color['line'], (self.game_middle_x, self.game_middle_y), int(self.game.screensize[1]/4), 4)
