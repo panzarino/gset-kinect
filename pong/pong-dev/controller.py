@@ -120,6 +120,7 @@ class Controller(object):
                                       nui.ImageType.Color)
 	# method that returns everything to its original position
 	def set(self):
+		self.level = 8
 		self.midline = Line(self.game.screen, self.color['line'], (self.game_middle_x, 0), (self.game_middle_x, self.game.screensize[1]), 4)
 		self.midline.draw()
 		self.midcircle = Circle(self.game.screen, self.color['line'], (self.game_middle_x, self.game_middle_y), int(self.game.screensize[1]/4), 4)
@@ -162,9 +163,11 @@ class Controller(object):
 					self.game.quit()
 		if int(time.time()) % 4 == 0 and not self.ai_time:
 			self.ai_time = True
-			self.ai_scale = randint(int(self.paddle_height/8), int(self.paddle_height/2)+int(self.paddle_height/4))
+			self.ai_scale = randint(int(self.paddle_height/8), int(self.paddle_height/2)+int(self.paddle_height/self.level))
 			if (randint(0, 2)):
 				self.ai_scale = -self.ai_scale
+			if (self.level > 1):
+				self.level -= 1
 		elif int(time.time()) % 4 != 0:
 			self.ai_time = False
 		self.ai.move(self.ball.pos[1]-(self.paddle_height/2)+self.ai_scale)
