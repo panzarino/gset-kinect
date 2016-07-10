@@ -33,6 +33,7 @@ score = 0
 round_score = 0
 rand_time = random.randint(3, 6)
 num_players = 0
+net_score = 0
 
 
 myfont = pygame.font.SysFont("monospace", 36, bold = True)
@@ -296,6 +297,7 @@ if __name__ == '__main__':
             if dif != None and dif != 0:
                 time_p = datetime.now()
                 score += dif
+                net_score += abs(dif)
             if draw_skeleton:
                 draw_skeletons(skeletons)
             display_box()
@@ -317,6 +319,7 @@ t = datetime.now()
 myfont2 = pygame.font.SysFont("monospace", 80, bold = True)
 
 pos = center(myfont2, "SCORE: " + str(int(score)), 0, 0, 640, 480)
+pos2 = center(myfont2, "NET SCORE: " + str(int(net_score)), 0, 0, 640, 480)
 
 pygame.mixer.music.load("Maple Leaf Rag.wav")
 pygame.mixer.music.play(0)
@@ -327,6 +330,15 @@ while((datetime.now() - t).seconds <= 5):
     pygame.Surface.fill(screen, (0, 0, 0), rect3)
     try:
         screen.blit(myfont2.render("SCORE: " + str(int(score)), True, (255, 255, 255)), pos)
+        pygame.display.update()
+    except pygame.error:
+        screen.unlock()
+while((datetime.now() - t).seconds <= 10):
+    rect3 = (0, 0, 640, 480)
+    screen.unlock()
+    pygame.Surface.fill(screen, (0, 0, 0), rect3)
+    try:
+        screen.blit(myfont2.render("NET SCORE: " + str(int(net_score)), True, (255, 255, 255)), pos2)
         pygame.display.update()
     except pygame.error:
         screen.unlock()
