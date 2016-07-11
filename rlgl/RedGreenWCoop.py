@@ -36,6 +36,7 @@ num_players = 0
 net_score = 0
 legs = False
 arms = False
+
 body_parts = raw_input("Would you like to work your upper body, lower body, or both?\n(u, l, b)")
 while not (arms or legs):
     if body_parts == "b":
@@ -47,6 +48,8 @@ while not (arms or legs):
         legs = True
     else:
         body_parts = raw_input("Please enter a valid response\n(u, l, b)")
+
+max_time = float(raw_input("For how long would you like to play? "))
 
 myfont = pygame.font.SysFont("monospace", 36, bold = True)
 
@@ -239,7 +242,6 @@ if __name__ == '__main__':
     full_screen = False
     draw_skeleton = False
 
-    max_time = float(raw_input("For how long would you like to play? "))
     pygame.mixer.music.load("Maple Leaf Rag.wav")
     
 
@@ -271,6 +273,8 @@ if __name__ == '__main__':
     
     # main game loop
     done = False
+    while(pygame.event.wait().type != KINECTEVENT)
+        pass
     while not done:
         e = pygame.event.wait()
         if first:
