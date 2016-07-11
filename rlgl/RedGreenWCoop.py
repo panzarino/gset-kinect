@@ -37,6 +37,14 @@ net_score = 0
 legs = False
 arms = False
 
+skeleton_input = raw_input("Would you like to have a skeleton displayed?\n(y, n)")
+while(draw_skeletons == None):
+    if skeleton_input == "y":
+        draw_skeletons = True
+    elif skeleton_input == "n":
+        draw_skeletons = False
+    else:
+        skeleton_input = raw_input("Enter a valid value\n(y, n)")
 body_parts = raw_input("Would you like to work your upper body, lower body, or both?\n(u, l, b)")
 while not (arms or legs):
     if body_parts == "b":
@@ -240,7 +248,6 @@ def score_update(e, t):
 
 if __name__ == '__main__':
     full_screen = False
-    draw_skeleton = False
 
     pygame.mixer.music.load("Maple Leaf Rag.wav")
     
