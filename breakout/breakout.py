@@ -1,9 +1,14 @@
-import graphics
+from pygame.color import THECOLORS
+from pygame.locals import *
+from pygame import sprite
 import math
 import random
 import time
 
-win = GraphWin("Breakout", 1200, 600)
+width = 1200
+height = 600
+
+win = GraphWin("Breakout", width, height)
 win.setCoords(0, 0, 200, 100)
 
 paddle = Polygon(Point(115, 1), Point(85, 1), Point(85, 3), Point(115, 3))
@@ -31,16 +36,50 @@ lives = Text(Point(190, 90), "Lives: %i" % numBalls)
 lives.setSize(16)
 lives.draw(win)
 
-block1 = Polygon(Point(100, 40), Point(100, 60), Point(90, 60), Point(90, 40))
-block2 = Polygon(Point(), Point(), Point(), Point())
-block3 = Polygon(Point(), Point(), Point(), Point())
-block4 = Polygon(Point(), Point(), Point(), Point())
-block5 = Polygon(Point(), Point(), Point(), Point())
-block6 = Polygon(Point(), Point(), Point(), Point())
-block7 = Polygon(Point(), Point(), Point(), Point())
-block8 = Polygon(Point(), Point(), Point(), Point())
-block9 = Polygon(Point(), Point(), Point(), Point())
-block10 = Polygon(Point(), Point(), Point(), Point())
+block1 = Polygon(Point(100, 50), Point(100, 60), Point(80, 60), Point(80, 50))
+block2 = Polygon(Point(80, 50), Point(80, 60), Point(60, 60), Point(60, 50))
+block3 = Polygon(Point(80, 70), Point(60, 70), Point(60, 60), Point(80, 60))
+block4 = Polygon(Point(120, 50), Point(120, 60), Point(100, 60), Point(100, 50))
+block5 = Polygon(Point(140, 50), Point(140, 60), Point(120, 60), Point(120, 50))
+block6 = Polygon(Point(140, 70), Point(140, 60), Point(120, 60), Point(120, 70))
+block7 = Polygon(Point(80, 80), Point(80, 70), Point(60, 70), Point(60, 80))
+block8 = Polygon(Point(100, 70), Point(120, 70), Point(120, 80), Point(100, 80))
+block9 = Polygon(Point(100, 70), Point(80, 70), Point(80, 80), Point(100, 80))
+block10 = Polygon(Point(120, 70), Point(140, 70), Point(140, 80), Point(120, 80))
+
+block1.setFill("blue")
+block2.setFill("green")
+block3.setFill("yellow")
+block4.setFill("orange")
+block5.setFill("red")
+block6.setFill("purple")
+block7.setFill("pink")
+block8.setFill("black")
+block9.setFill("tan")
+block10.setFill("light blue")
+
+block1.draw(win)
+block2.draw(win)
+block3.draw(win)
+block4.draw(win)
+block5.draw(win)
+block6.draw(win)
+block7.draw(win)
+block8.draw(win)
+block9.draw(win)
+block10.draw(win)
+
+screen = pygame.display.set_mode((width, height), 0, 32)
+screen.convert()
+screen.fill(THECOLORS["black"])
+
+background = pygame.Surface((width, height), 0, 32)
+background.fill(THECOLORS["black"])
+background.convert()
+
+self.group.clear(screen, background)
+with self.game.screen_lock:
+	self.group.draw(screen)
 
 while (numBalls > 0):
 	if (paddleCpt == ballCptX):
@@ -74,20 +113,24 @@ while (numBalls > 0):
 		balldy = random.choice([1, 2])
 
 	elif (ballCptY <= 5 and ballCptX >= paddleCpt-15 and ballCptX <= paddleCpt+15):	# collision
-#		balldy *= -1
 		if (ballCptX == paddleCpt):
 			balldx = 0
 			balldy *=-1
 
-		if (ballCptX <= paddleCpt):
+		if (ballCptX < paddleCpt):
 			angle = 90 - 14/3 * (paddleCpt - ballCptX)
 			balldx = math.tan(angle)
 			balldy = 1
 
-		if (ballCptX >= paddleCpt):
+		if (ballCptX > paddleCpt):
 			angle = 90 + 14/3 * (ballCptX - paddleCpt)
 			balldx = math.tan(angle)
 			balldy = 1
+
+if (numBalls == 0):
+	t.setText("You lost!")
+else:
+	t.setText("You won!")
 
 #math.atan2
 win.getMouse()
