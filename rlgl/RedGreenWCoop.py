@@ -34,7 +34,19 @@ round_score = 0
 rand_time = random.randint(3, 6)
 num_players = 0
 net_score = 0
-
+legs = False
+arms = False
+body_parts = raw_input("Would you like to work your upper body, lower body, or both?\n(u, l, b)")
+while not (arms or legs):
+    if body_parts == "b":
+        arms = True
+        legs = True
+    elif body_parts == "u":
+        arms = True
+    elif body_parts == "l":
+        legs = True
+    else:
+        body_parts = raw_input("Please enter a valid response\n(u, l, b)")
 
 myfont = pygame.font.SysFont("monospace", 36, bold = True)
 
@@ -71,11 +83,12 @@ time_c = datetime.now()
 time_s = datetime.now()
 original_time = datetime.now()
 time_p = datetime.now()
-left_hand_pos = (0.0, 0.0)
-right_hand_pos = (0.0, 0.0)
-left_foot_pos = (0.0, 0.0)
-right_foot_pos = (0.0, 0.0)
-head_pos = (0.0, 0.0)
+if arms:
+    left_hand_pos = (0.0, 0.0)
+    right_hand_pos = (0.0, 0.0)
+if legs:
+    left_foot_pos = (0.0, 0.0)
+    right_foot_pos = (0.0, 0.0)
 
 def draw_skeleton_data(pSkelton, index, positions, width = 4):
     start = pSkelton.SkeletonPositions[positions[0]]
@@ -116,13 +129,6 @@ def surface_to_array(surface):
 
 def center(font, string, w, x, y, z):
     dim = font.size(string)
-    """
-    y-w == width available
-    dim[0] == width needed
-    y-w-dim[0] == leftover space
-    leftover space / 2 = right offset
-    w + right offset = wanted value
-    """
     width = w + (y - w - dim[0]) / 2
     height = x + (z - x - dim[1]) / 2
     return (width, height)
@@ -178,8 +184,9 @@ def score_update(e, t):
     global right_hand_pos
     global left_foot_pos
     global right_foot_pos
-    global head_pos
     global num_players
+    global legs
+    global arms
     difference_p = datetime.now() - t
     score_change = 0
     num_players = 0
@@ -187,34 +194,35 @@ def score_update(e, t):
         if skeletons.eTrackingState == SkeletonTrackingState.TRACKED:
             num_players += 1            
 
-            left_hand = skeletons.SkeletonPositions[JointId.HandLeft]
-            right_hand = skeletons.SkeletonPositions[JointId.HandRight]
-            left_foot = skeletons.SkeletonPositions[JointId.FootLeft]
-            right_foot = skeletons.SkeletonPositions[JointId.FootRight]
-            head = skeletons.SkeletonPositions[JointId.Head]
-            first_time = left_hand_pos == (0,0)
+            if arms:
+                left_hand = skeletons.SkeletonPositions[JointId.HandLeft]
+                right_hand = skeletons.SkeletonPositions[JointId.HandRight]
+                first_time = left_hand_pos == (0,0)
+            if legs:
+                left_foot = skeletons.SkeletonPositions[JointId.FootLeft]
+                right_foot = skeletons.SkeletonPositions[JointId.FootRight]
+                first_time = left_foot_pos == (0,0)
+            
+            
             
             if difference_p.seconds >= 0.01:
-                left_hand_pos_now = left_hand.x, left_hand.y
-                score_change += get_change(100 * left_hand_pos[0], 100 * left_hand_pos[1], 100 * left_hand_pos_now[0], 100 *left_hand_pos_now[1])
-                left_hand_pos = left_hand_pos_now
+                if arms:
+                    left_hand_pos_now = left_hand.x, left_hand.y
+                    score_change += get_change(100 * left_hand_pos[0], 100 * left_hand_pos[1], 100 * left_hand_pos_now[0], 100 *left_hand_pos_now[1])
+                    left_hand_pos = left_hand_pos_now
+                    
+                    right_hand_pos_now = right_hand.x, right_hand.y
+                    score_change += get_change(100 * right_hand_pos[0], 100 * right_hand_pos[1], 100 * right_hand_pos_now[0], 100 * right_hand_pos_now[1])
+                    right_hand_pos = right_hand_pos_now
+                if legs:
+                    left_foot_pos_now = left_foot.x, left_foot.y
+                    score_change = get_change(100 * left_foot_pos[0], 100 * left_foot_pos[1], 100 * left_foot_pos_now[0], 100 *left_foot_pos_now[1])
+                    left_foot_pos = left_foot_pos_now
+                    
+                    right_foot_pos_now = right_foot.x, right_foot.y
+                    score_change += get_change(100 * right_foot_pos[0], 100 * right_foot_pos[1], 100 * right_foot_pos_now[0], 100 * right_foot_pos_now[1])
+                    right_foot_pos = right_foot_pos_now
                 
-                right_hand_pos_now = right_hand.x, right_hand.y
-                score_change += get_change(100 * right_hand_pos[0], 100 * right_hand_pos[1], 100 * right_hand_pos_now[0], 100 * right_hand_pos_now[1])
-                right_hand_pos = right_hand_pos_now
-
-                left_foot_pos_now = left_foot.x, left_foot.y
-                score_change = get_change(100 * left_foot_pos[0], 100 * left_foot_pos[1], 100 * left_foot_pos_now[0], 100 *left_foot_pos_now[1])
-                left_foot_pos = left_foot_pos_now
-                
-                right_foot_pos_now = right_foot.x, right_foot.y
-                score_change += get_change(100 * right_foot_pos[0], 100 * right_foot_pos[1], 100 * right_foot_pos_now[0], 100 * right_foot_pos_now[1])
-                right_foot_pos = right_foot_pos_now
-                
-                head_pos_now = head.x, head.y
-                score_change += get_change(100 * head_pos[0], 100 * head_pos[1], 100 * head_pos_now[0], 100 * head_pos_now[1])
-                head_pos = head_pos_now
-
                 time_p = datetime.now()
 
                 if first_time:
