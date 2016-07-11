@@ -1,4 +1,4 @@
-from graphics import *
+import graphics
 import math
 import random
 import time
@@ -74,7 +74,20 @@ while (numBalls > 0):
 		balldy = random.choice([1, 2])
 
 	elif (ballCptY <= 5 and ballCptX >= paddleCpt-15 and ballCptX <= paddleCpt+15):	# collision
-		balldy *= -1
+#		balldy *= -1
+		if (ballCptX == paddleCpt):
+			balldx = 0
+			balldy *=-1
+
+		if (ballCptX <= paddleCpt):
+			angle = 90 - 14/3 * (paddleCpt - ballCptX)
+			balldx = math.tan(angle)
+			balldy = 1
+
+		if (ballCptX >= paddleCpt):
+			angle = 90 + 14/3 * (ballCptX - paddleCpt)
+			balldx = math.tan(angle)
+			balldy = 1
 
 #math.atan2
 win.getMouse()
