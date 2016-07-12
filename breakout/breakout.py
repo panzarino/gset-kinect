@@ -1,3 +1,4 @@
+import pygame
 from pygame.color import THECOLORS
 from pygame.locals import *
 from pygame import sprite
@@ -8,33 +9,22 @@ import time
 width = 1200
 height = 600
 
-win = GraphWin("Breakout", width, height)
-win.setCoords(0, 0, 200, 100)
+paddle = Rect(85, 3, 30, 2)
+color = (THECOLORS["blue"])
 
-paddle = Polygon(Point(115, 1), Point(85, 1), Point(85, 3), Point(115, 3))
-paddle.setFill("blue")
-paddle.setOutline("red")
-paddle.setWidth(2)
-paddle.draw(win)
-
-t = Text(Point(100, 50), "Welcome to Breakout!")
-t.setSize(16)
-t.draw(win)
-
-ball = Circle(Point(100, 5), 2)		# ball starts on paddle
-ball.draw(win)						# use leg? to start (kick leg)
+radius = 2
+size = 2 * radius
+image = pygame.SurfaceType((size, size))
+pygame.draw.circle(image, THECOLORS["white"], (size/2, size/2), size/2)
 ballCptX = 100
 ballCptY = 5
-radius = 2
 balldx = random.choice([2, -2])
 balldy = random.choice([1, 2])
+speed = math.sqrt(balldx**2 + balldy**2)
 
 paddleCpt = 100
 
 numBalls = 3
-lives = Text(Point(190, 90), "Lives: %i" % numBalls)
-lives.setSize(16)
-lives.draw(win)
 
 block1 = Polygon(Point(100, 50), Point(100, 60), Point(80, 60), Point(80, 50))
 block2 = Polygon(Point(80, 50), Point(80, 60), Point(60, 60), Point(60, 50))
@@ -113,19 +103,20 @@ while (numBalls > 0):
 		balldy = random.choice([1, 2])
 
 	elif (ballCptY <= 5 and ballCptX >= paddleCpt-15 and ballCptX <= paddleCpt+15):	# collision
+		angle = atan2(balldx, balldy)
 		if (ballCptX == paddleCpt):
 			balldx = 0
-			balldy *=-1
+			balldy *= 1
 
 		if (ballCptX < paddleCpt):
 			angle = 90 - 14/3 * (paddleCpt - ballCptX)
-			balldx = math.tan(angle)
-			balldy = 1
+			balldy = math.sin(angle) * speed
+			balldx = math.cos(angle) * speed
 
 		if (ballCptX > paddleCpt):
 			angle = 90 + 14/3 * (ballCptX - paddleCpt)
-			balldx = math.tan(angle)
-			balldy = 1
+			balldy = math.sin(angle) * speed
+			balldx = math.cos(angle) * speed
 
 if (numBalls == 0):
 	t.setText("You lost!")
