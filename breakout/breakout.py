@@ -9,20 +9,6 @@ import time
 width = 1200
 height = 600
 
-color = (THECOLORS["blue"])
-
-radius = 2
-size = 2 * radius
-image = pygame.SurfaceType((size, size))
-pygame.draw.circle(image, THECOLORS["white"], (size/2, size/2), size/2)
-ballCptX = 100
-ballCptY = 5
-balldx = random.choice([2, -2])
-balldy = random.choice([1, 2])
-speed = math.sqrt(balldx**2 + balldy**2)
-
-paddleCpt = 100
-
 numBalls = 3
 
 class NotABall(sprite.Sprite):
@@ -30,11 +16,12 @@ class NotABall(sprite.Sprite):
         pass
 
 class Paddle(pygame.sprite.DirtySprite, NotABall):
-	def __init__(self, image):
+	def __init__(self, image, paddleCpt):
 		self.image = image
 		self.dirty = 2
 		self.rect = Rect(85, 3, 30, 2)
 		self.size = Rect(0, 0, 30, 2)
+		self.paddleCpt = 100
 
 class Block(NotABall):
 	def __init__(self, x, y, w, h, color):
@@ -43,6 +30,27 @@ class Block(NotABall):
 		self.color = color
 		self.image = pygame.SurfaceType((w, h))
 		pygame.draw.rect(self.image, color, self.size)
+
+class Ball(sprite.Sprite):
+    def __init__(self, game, color = 'white', size = 2, 
+                 direction = math.atan2(1, .5), ballCptX = 100, ballCptY = 5, balldx = random.choice([2, -2]), balldy = random.choice([1, 2])):
+        super(Ball, self).__init__()
+        self.size = size
+        self.color = color
+        self.image = pygame.SurfaceType((size, size))
+        self.set_color(color)
+        self.speed = speed
+        self.ballCptX = ballCptX
+        self.ballCptY = ballCptY
+        self.balldx = balldx
+        self.balldy = balldy
+        self.old_pos = None        
+        self.rect = pygame.Rect(ballCptX, ballCptY, size, size)
+        self.speed = math.sqrt(balldx**2 + balldy**2)
+
+    def set_color(self, new_color):
+        self.color = new_color
+        pygame.draw.circle(self.image, THECOLORS[new_color], (self.size/2, self.size/2), self.size/2)
 
 block1 = Block(80, 60, 20, 10, THECOLORS["blue"])
 block2 = Block(60, 60, 20, 10, THECOLORS["green"])
@@ -65,10 +73,6 @@ background.convert()
 
 image1 = pygame.SurfaceType((15, 40))
 pygame.draw.rect(image1, THECOLORS["red"], pygame.Rect(0, 0, 30, 2))
-paddles = Paddle(image1)
-
-group = sprite.LayeredDirty(paddles)
-group.draw(screen)
 
 while (numBalls > 0):
 	if (paddleCpt == ballCptX):
