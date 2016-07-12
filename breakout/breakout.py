@@ -26,27 +26,24 @@ paddleCpt = 100
 
 numBalls = 3
 
-block1 = Polygon(Point(100, 50), Point(100, 60), Point(80, 60), Point(80, 50))
-block2 = Polygon(Point(80, 50), Point(80, 60), Point(60, 60), Point(60, 50))
-block3 = Polygon(Point(80, 70), Point(60, 70), Point(60, 60), Point(80, 60))
-block4 = Polygon(Point(120, 50), Point(120, 60), Point(100, 60), Point(100, 50))
-block5 = Polygon(Point(140, 50), Point(140, 60), Point(120, 60), Point(120, 50))
-block6 = Polygon(Point(140, 70), Point(140, 60), Point(120, 60), Point(120, 70))
-block7 = Polygon(Point(80, 80), Point(80, 70), Point(60, 70), Point(60, 80))
-block8 = Polygon(Point(100, 70), Point(120, 70), Point(120, 80), Point(100, 80))
-block9 = Polygon(Point(100, 70), Point(80, 70), Point(80, 80), Point(100, 80))
-block10 = Polygon(Point(120, 70), Point(140, 70), Point(140, 80), Point(120, 80))
+class Block():
+	def __init__(self, x, y, w, h, color):
+		self.size = Rect(0, 0, w, h)
+		self.rect = Rect(x, y, w, h)
+		self.color = color
+		self.image = pygame.SurfaceType((w, h))
+		pygame.draw.rect(self.image, color, self.size)
 
-block1.setFill("blue")
-block2.setFill("green")
-block3.setFill("yellow")
-block4.setFill("orange")
-block5.setFill("red")
-block6.setFill("purple")
-block7.setFill("pink")
-block8.setFill("black")
-block9.setFill("tan")
-block10.setFill("light blue")
+block1 = Block(80, 60, 20, 10, THECOLORS["blue"])
+block2 = Block(60, 60, 20, 10, THECOLORS["green"])
+block3 = Block(60, 60, 20, 10, THECOLORS["yellow"])
+block4 = Block(100, 60, 20, 10, THECOLORS["orange"])
+block5 = Block(120, 60, 20, 10, THECOLORS["red"])
+block6 = Block(120, 60, 20, 10, THECOLORS["purple"])
+block7 = Block(60, 70, 20, 10, THECOLORS["pink"])
+block8 = Block(120, 80, 20, 10, THECOLORS["black"])
+block9 = Block(80, 80, 20, 10, THECOLORS["tan"])
+block10 = Block(140, 80, 20, 10, THECOLORS["light blue"])
 
 block1.draw(win)
 block2.draw(win)
