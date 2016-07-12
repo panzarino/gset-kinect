@@ -23,6 +23,9 @@ class Paddle(pygame.sprite.DirtySprite, NotABall):
 		self.size = Rect(0, 0, 30, 2)
 		self.paddleCpt = 100
 
+	def getPaddleCpt():
+		return paddleCpt
+
 class Block(NotABall):
 	def __init__(self, x, y, w, h, color):
 		self.size = Rect(0, 0, w, h)
@@ -32,14 +35,12 @@ class Block(NotABall):
 		pygame.draw.rect(self.image, color, self.size)
 
 class Ball(sprite.Sprite):
-    def __init__(self, game, color = 'white', size = 2, 
-                 direction = math.atan2(1, .5), ballCptX = 100, ballCptY = 5, balldx = random.choice([2, -2]), balldy = random.choice([1, 2])):
+    def __init__(self, color = 'white', size = 2, direction = math.atan2(1, .5), ballCptX = 100, ballCptY = 5, balldx = random.choice([2, -2]), balldy = random.choice([1, 2])):
         super(Ball, self).__init__()
         self.size = size
         self.color = color
         self.image = pygame.SurfaceType((size, size))
         self.set_color(color)
-        self.speed = speed
         self.ballCptX = ballCptX
         self.ballCptY = ballCptY
         self.balldx = balldx
@@ -51,6 +52,30 @@ class Ball(sprite.Sprite):
     def set_color(self, new_color):
         self.color = new_color
         pygame.draw.circle(self.image, THECOLORS[new_color], (self.size/2, self.size/2), self.size/2)
+
+    def getBallCptX():
+    	return ballCptX
+
+    def getBallCptY():
+    	return ballCptY
+
+    def getBalldx():
+    	return balldx
+
+    def getBalldy():
+    	return balldy
+
+    def setBallCptX(x):
+    	ballCptX = x
+
+    def setBallCptY(y):
+    	ballCptY = y
+
+    def setBalldx(x):
+    	balldx = x
+
+    def setBalldy(y):
+    	balldy = y
 
 block1 = Block(80, 60, 20, 10, THECOLORS["blue"])
 block2 = Block(60, 60, 20, 10, THECOLORS["green"])
@@ -74,21 +99,23 @@ background.convert()
 image1 = pygame.SurfaceType((15, 40))
 pygame.draw.rect(image1, THECOLORS["red"], pygame.Rect(0, 0, 30, 2))
 
+ball = Ball()
+paddle = Paddle()
+
 while (numBalls > 0):
-	if (paddleCpt == ballCptX):
+	if (Paddle.getPaddleCpt() == Ball.getBallCptX()):
 		pass
 
-	elif (paddleCpt < ballCptX and paddleCpt < 185):
+	elif (paddle.getPaddleCpt() < ball.getBallCptX() and paddle.getPaddleCpt() < 185):
 		paddle.move(1,0)
 		paddleCpt += 1
 
-	elif (paddleCpt > ballCptX and paddleCpt > 15):
+	elif (paddle.getPaddleCpt() > ball.getBallCptX() and paddle.getPaddleCpt() > 15):
 		paddle.move(-1,0)
 		paddleCpt -= 1
 
-	ball.move(balldx, balldy)
-	ballCptX += balldx
-	ballCptY += balldy
+	ball.setBallCptX(ball.getBallCptX() + ball.getBalldx)
+	ball.setBallCptY(ball.getBallCptY() + ball.getBalldy)
 
 	if (ballCptX-radius <= 0 or ballCptX+radius >= 200):
 		balldx *= -1
