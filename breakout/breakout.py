@@ -9,7 +9,6 @@ import time
 width = 1200
 height = 600
 
-paddle = Rect(85, 3, 30, 2)
 color = (THECOLORS["blue"])
 
 radius = 2
@@ -26,7 +25,18 @@ paddleCpt = 100
 
 numBalls = 3
 
-class Block():
+class NotABall(sprite.Sprite):
+    def hit_by_ball(self, cur_ball):
+        pass
+
+class Paddle(pygame.sprite.DirtySprite, NotABall):
+	def __init__(self, image):
+		self.image = image
+		self.dirty = 2
+		self.rect = Rect(85, 3, 30, 2)
+		self.size = Rect(0, 0, 30, 2)
+
+class Block(NotABall):
 	def __init__(self, x, y, w, h, color):
 		self.size = Rect(0, 0, w, h)
 		self.rect = Rect(x, y, w, h)
@@ -43,18 +53,7 @@ block6 = Block(120, 60, 20, 10, THECOLORS["purple"])
 block7 = Block(60, 70, 20, 10, THECOLORS["pink"])
 block8 = Block(120, 80, 20, 10, THECOLORS["black"])
 block9 = Block(80, 80, 20, 10, THECOLORS["tan"])
-block10 = Block(140, 80, 20, 10, THECOLORS["light blue"])
-
-block1.draw(win)
-block2.draw(win)
-block3.draw(win)
-block4.draw(win)
-block5.draw(win)
-block6.draw(win)
-block7.draw(win)
-block8.draw(win)
-block9.draw(win)
-block10.draw(win)
+block10 = Block(140, 80, 20, 10, THECOLORS["white"])
 
 screen = pygame.display.set_mode((width, height), 0, 32)
 screen.convert()
@@ -64,9 +63,12 @@ background = pygame.Surface((width, height), 0, 32)
 background.fill(THECOLORS["black"])
 background.convert()
 
-self.group.clear(screen, background)
-with self.game.screen_lock:
-	self.group.draw(screen)
+image1 = pygame.SurfaceType((15, 40))
+pygame.draw.rect(image1, THECOLORS["red"], pygame.Rect(0, 0, 30, 2))
+paddles = Paddle(image1)
+
+group = sprite.LayeredDirty(paddles)
+group.draw(screen)
 
 while (numBalls > 0):
 	if (paddleCpt == ballCptX):
