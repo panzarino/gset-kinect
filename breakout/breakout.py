@@ -6,11 +6,6 @@ import math
 import random
 import time
 
-width = 1200
-height = 600
-
-numBalls = 3
-
 class NotABall(sprite.Sprite):
     def hit_by_ball(self, cur_ball):
         pass
@@ -49,6 +44,11 @@ class Ball(sprite.Sprite):
         self.rect = pygame.Rect(ballCptX, ballCptY, size, size)
         self.speed = math.sqrt(balldx**2 + balldy**2)
         self.radius = size / 2
+
+    def update(self, *args):
+    	self.prev_rect = self.rect
+        self.rect = pygame.Rect(self.ballCptX, self.ballCptY, self.size, self.size)
+        return super(Ball, self).update(*args)
 
     def set_color(self, new_color):
         self.color = new_color
@@ -92,81 +92,112 @@ block8 = Block(120, 80, 20, 10, THECOLORS["black"])
 block9 = Block(80, 80, 20, 10, THECOLORS["tan"])
 block10 = Block(140, 80, 20, 10, THECOLORS["white"])
 
-screen = pygame.display.set_mode((width, height), 0, 32)
-screen.convert()
-screen.fill(THECOLORS["black"])
+clock = pygame.time.Clock() 
 
-background = pygame.Surface((width, height), 0, 32)
-background.fill(THECOLORS["black"])
-background.convert()
+class Game(object):
+	def __init__(self):
+		self.width = 1200
+		self.height = 600
 
-image1 = pygame.SurfaceType((15, 40))
-pygame.draw.rect(image1, THECOLORS["red"], pygame.Rect(0, 0, 30, 2))
+		self.numBalls = 3
 
-ball = Ball()
-paddle = Paddle(image1)
+		self.screen = pygame.display.set_mode((self.width, self.height), 0, 32)
+		self.screen.convert()
+		self.screen.fill(THECOLORS["black"])
 
-ballCptX = ball.getBallCptX()
-ballCptY = ball.getBallCptY()
-balldx = ball.getBalldx()
-balldy = ball.getBalldy()
-paddleCpt = paddle.getPaddleCpt()
-radius = ball.getRadius()
+		self.background = pygame.Surface((self.width, self.height), 0, 32)
+		self.background.fill(THECOLORS["black"])
+		self.background.convert()
 
-while (numBalls > 0):
-	if (paddleCpt == ballCptX):
-		pass
+		self.image1 = pygame.SurfaceType((15, 40))
+		pygame.draw.rect(self.image1, THECOLORS["red"], pygame.Rect(0, 0, 30, 2))
 
-	elif (paddleCpt < ballCptX and paddleCpt < 185):
-		paddle.move(1,0)
-		paddleCpt += 1
+		self.ball = Ball()
+		self.paddle = Paddle(self.image1)
 
-	elif (paddleCpt > ballCptX and paddleCpt > 15):
-		paddle.move(-1,0)
-		paddleCpt -= 1
+		self.ballCptX = self.ball.getBallCptX()
+		self.ballCptY = self.ball.getBallCptY()
+		self.balldx = self.ball.getBalldx()
+		self.balldy = self.ball.getBalldy()
+		self.paddleCpt = self.paddle.getPaddleCpt()
+		self.radius = self.ball.getRadius()
 
-	totalx = ballCptX + balldx
-	totaly = ballCptY + balldy
-	ball.setBallCptX(totalx)
-	ball.setBallCptY(totaly)
+	def doUpdate(self):
+		pygame.display.set_caption('Python Kinect Game %d fps' % clock.get_fps())
+		self.ball.update()
+		self.draw()
+
+	def play(self):
+		while (self.numBalls > 0):
+			if (self.paddleCpt == self.ballCptX):
+				pass
+
+			elif (self.paddleCpt < self.ballCptX and self.paddleCpt < 185):
+				self.paddle.move(1,0)
+				self.paddleCpt += 1
+
+			elif (self.paddleCpt > self.ballCptX and self.paddleCpt > 15):
+				paddle.move(-1,0)
+				paddleCpt -= 1
+
+			self.totalx = self.ballCptX + self.balldx
+			self.totaly = self.ballCptY + self.balldy
+			self.ball.setBallCptX(self.totalx)
+			self.ball.setBallCptY(self.totaly)
 
 
-	if (ballCptX-radius <= 0 or ballCptX+radius >= 200):
-		balldx *= -1
+			if (self.ballCptX - self.radius <= 0 or self.ballCptX + self.radius >= 200):
+				self.balldx *= -1
 
-	if (ballCptY+radius >= 99):
-		balldy *= -1
+			if (self.ballCptY + self.radius >= 99):
+				self.balldy *= -1
 
-	if (ballCptY <= -2):
-		numBalls -= 1
-		lives.setText("Lives: %i" % numBalls)
-		time.sleep(2)
-		ball.move(paddleCpt-ballCptX, 5-ballCptY)
-		ballCptX = paddleCpt
-		ballCptY = 5
-		balldy = random.choice([1, 2])
+			if (self.ballCptY <= -2):
+				self.numBalls -= 1
+				self.lives.setText("Lives: %i" % self.numBalls)
+				time.sleep(2)
+				self.ball.move(self.paddleCpt - self.ballCptX, 5 - self.ballCptY)
+				self.ballCptX = self.paddleCpt
+				self.ballCptY = 5
+				self.balldy = random.choice([1, 2])
 
-	elif (ballCptY <= 5 and ballCptX >= paddleCpt-15 and ballCptX <= paddleCpt+15):	# collision
-		angle = math.atan2(balldx, balldy)
-		if (ballCptX == paddleCpt):
-			balldx = 0
-			balldy *= 1
+			elif (self.ballCptY <= 5 and self.ballCptX >= self.paddleCpt - 15 and self.ballCptX <= self.paddleCpt+15):
+				self.angle = math.atan2(self.balldx, self.balldy)
+				if (self.ballCptX == self.paddleCpt):
+					self.balldx = 0
+					self.balldy *= 1
 
-		if (ballCptX < paddleCpt):
-			angle = 90 - 14/3 * (paddleCpt - ballCptX)
-			balldy = math.sin(angle) * speed
-			balldx = math.cos(angle) * speed
+				if (self.ballCptX < self.paddleCpt):
+					self.angle = 90 - 14/3 * (self.paddleCpt - self.ballCptX)
+					self.balldy = math.sin(self.angle) * self.speed
+					self.balldx = math.cos(self.angle) * self.speed
 
-		if (ballCptX > paddleCpt):
-			angle = 90 + 14/3 * (ballCptX - paddleCpt)
-			balldy = math.sin(angle) * speed
-			balldx = math.cos(angle) * speed
+				if (self.ballCptX > self.paddleCpt):
+					self.angle = 90 + 14/3 * (ballCptX - paddleCpt)
+					self.balldy = math.sin(self.angle) * self.speed
+					self.balldx = math.cos(self.angle) * self.speed
 
-if (numBalls == 0):
-	t.setText("You lost!")
-else:
-	t.setText("You won!")
+			self.ball.setBalldx(self.balldx)
+			self.ball.setBalldy(self.balldy)
+			self.ball.setBallCptX(self.ballCptX)
+			self.ball.setBallCptY(self.ballCptY)
 
-#math.atan2
-win.getMouse()
-win.close()
+			print ("test")
+
+			self.doUpdate()
+
+			pygame.display.flip()
+			clock.tick(40)
+
+		if (self.numBalls == 0):
+			t.setText("You lost!")
+		else:
+			t.setText("You won!")
+
+if __name__ == '__main__':
+    # Initialize PyGame
+    pygame.init()
+    pygame.font.init()
+
+    game = Game()
+    game.play()
