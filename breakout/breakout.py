@@ -12,7 +12,7 @@ class NotABall(sprite.Sprite):
 
 class Paddle(pygame.sprite.DirtySprite, NotABall):
 	def __init__(self, image):
-
+		super(Paddle, self).__init__()
 		self.image = image
 		self.dirty = 2
 		self.rect = Rect(85, 3, 30, 2)
@@ -32,7 +32,7 @@ class Block(NotABall):
 		pygame.draw.rect(self.image, color, self.size)
 
 class Ball(sprite.Sprite):
-	def __init__(self, color = 'white', size = 2, direction = math.atan2(1, .5), ballCptX = 100, ballCptY = 5, balldx = random.choice([2, -2]), balldy = random.choice([1, 2])):
+	def __init__(self, color = 'white', size = 12, direction = math.atan2(1, .5), ballCptX = 100, ballCptY = 10, balldx = random.choice([2, -2]), balldy = random.choice([1, 2])):
 		super(Ball, self).__init__()
 		self.size = size
 		self.color = color
@@ -113,6 +113,7 @@ class Game(object):
 
 		self.pieces_group = sprite.Group(block1, block2, block3, block4, block5, block6, block7, block8, block9, block10)
 		self.ball_group = sprite.Group()
+		self.paddle_group = sprite.Group()
 
 		self.image1 = pygame.SurfaceType((15, 40))
 		pygame.draw.rect(self.image1, THECOLORS["red"], pygame.Rect(0, 0, 90, 6))
@@ -128,6 +129,7 @@ class Game(object):
 		self.radius = self.ball.getRadius()
 
 		self.ball.add(self.ball_group)
+		self.paddle.add(self.paddle_group)
 
 	def draw(self):
 		self.pieces_group.clear(self.screen, self.background)
@@ -136,6 +138,8 @@ class Game(object):
 		self.ball_group.clear(self.screen, self.background)
 		self.ball_group.draw(self.screen)
 
+		self.paddle_group.draw(self.screen)
+
 	def doUpdate(self):
 		pygame.display.set_caption('Python Kinect Game %d fps' % clock.get_fps())
 		self.ball.update()
@@ -143,22 +147,6 @@ class Game(object):
 
 	def play(self):
 		while (self.numBalls > 0):
-			if (self.paddleCpt == self.ballCptX):
-				pass
-
-			elif (self.paddleCpt < self.ballCptX and self.paddleCpt < 185):
-				self.paddle.move(1,0)
-				self.paddleCpt += 1
-
-			elif (self.paddleCpt > self.ballCptX and self.paddleCpt > 15):
-				paddle.move(-1,0)
-				paddleCpt -= 1
-
-			self.totalx = self.ballCptX + self.balldx
-			self.totaly = self.ballCptY + self.balldy
-			self.ball.setBallCptX(self.totalx)
-			self.ball.setBallCptY(self.totaly)
-
 
 			if (self.ballCptX - self.radius <= 0 or self.ballCptX + self.radius >= 200):
 				self.balldx *= -1
@@ -179,7 +167,7 @@ class Game(object):
 				self.angle = math.atan2(self.balldx, self.balldy)
 				if (self.ballCptX == self.paddleCpt):
 					self.balldx = 0
-					self.balldy *= 1
+					self.balldy *= -1
 
 				if (self.ballCptX < self.paddleCpt):
 					self.angle = 90 - 14/3 * (self.paddleCpt - self.ballCptX)
@@ -191,10 +179,14 @@ class Game(object):
 					self.balldy = math.sin(self.angle) * self.speed
 					self.balldx = math.cos(self.angle) * self.speed
 
-			self.ball.setBalldx(self.balldx)
-			self.ball.setBalldy(self.balldy)
-			self.ball.setBallCptX(self.ballCptX)
-			self.ball.setBallCptY(self.ballCptY)
+			self.totalx = self.ballCptX + self.balldx
+			self.totaly = self.ballCptY + self.balldy
+			self.ball.setBallCptX(self.totalx)
+			self.ball.setBallCptY(self.totaly)
+			self.ball.setBalldx = self.balldx
+			self.ball.setballdy = self.balldy
+			print(self.balldy)
+			print(self.balldx)
 
 			self.doUpdate()
 
