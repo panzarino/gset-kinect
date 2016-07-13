@@ -44,6 +44,13 @@ class Circle(object):
 		self.speed = math.sqrt(self.balldx**2 + self.balldy**2)
 	# put into position
 	def draw(self):
+		print(self.screen)
+		print(self.color)
+		print(self.pos)
+		print(self.radius)
+		print(self.outline)
+		self.setPos(int(self.pos[0]), int(self.pos[1]))
+		print(self.pos)
 		self.rect = circle(self.screen, self.color, self.pos, self.radius, self.outline)
 
 	def setPos(self, xpos, ypos):
@@ -126,48 +133,30 @@ class Game(object):
 				self.ball.balldy = random.choice([1, 2])
 
 			elif (self.ball.pos[1] <= 5 and self.ball.pos[0] >= self.paddleCpt - 15 and self.ball.pos[0] <= self.paddleCpt+15):
-				print ("test")
 				self.angle = math.atan2(self.ball.balldx, self.ball.balldy)
 				if (self.ball.pos[0] == self.paddleCpt):
 					self.ball.balldx = 0
 					self.ball.balldy *= -1
-					print("1")
 
 				if (self.ball.pos[0] < self.paddleCpt):
 					self.angle = 90 - 14/3 * (self.paddleCpt - self.ball.pos[0])
 					self.ball.balldy = math.sin(self.angle) * self.ball.speed
 					self.ball.balldx = math.cos(self.angle) * self.ball.speed
-					print("2")
 
 				if (self.ball.pos[0] > self.paddleCpt):
 					self.angle = 90 + 14/3 * (self.ball.pos[0] - self.paddleCpt)
 					self.ball.balldy = math.sin(self.angle) * self.ball.speed
 					self.ball.balldx = math.cos(self.angle) * self.ball.speed
-					print("3")
-
-			print("BallCptX1 = ")
-			print(self.ball.pos[0])
-			print("BallCptY1 = ")
-			print(self.ball.pos[1])
-			print("ball.balldx = ")
-			print(self.ball.balldx)
-			print("ball.balldy = ")
-			print(self.ball.balldy)
 
 			self.totalx = self.ball.pos[0] + self.ball.balldx
 			self.totaly = self.ball.pos[1] + self.ball.balldy
-			self.ball.setPos(self.totalx, self.totaly)
+			print(self.totalx)
+			print(self.totaly)
+			print(int(self.totalx))
+			print(int(self.totaly))
+			self.ball.setPos(int(self.totalx), int(self.totaly))
 			self.ball.balldx = self.ball.balldx
 			self.ball.balldy = self.ball.balldy
-
-			print("Totalx = ")
-			print(self.totalx)
-			print("Totaly = ")
-			print(self.totaly)
-			print("BallCptX2 = ")
-			print(self.ball.pos[0])
-			print("BallCptY2 = ")
-			print(self.ball.pos[1])
 
 			self.doUpdate()
 
