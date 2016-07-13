@@ -2,6 +2,7 @@ import pygame
 from pygame.color import THECOLORS
 from pygame.locals import *
 from pygame import sprite
+from pygame.draw import *
 import math
 import random
 import time
@@ -31,57 +32,29 @@ class Block(NotABall):
 		self.image = pygame.SurfaceType((w, h))
 		pygame.draw.rect(self.image, color, self.size)
 
-class Ball(sprite.Sprite):
-	def __init__(self, color = 'white', size = 12, direction = math.atan2(1, .5), ballCptX = 100, ballCptY = 10, balldx = random.choice([2, -2]), balldy = random.choice([1, 2])):
-		super(Ball, self).__init__()
-		self.size = size
-		self.color = color
-		self.image = pygame.SurfaceType((size, size))
-		self.set_color(color)
-		self.ballCptX = ballCptX
-		self.ballCptY = ballCptY
-		self.balldx = balldx
-		self.balldy = balldy
-		self.old_pos = None
-		self.rect = pygame.Rect(ballCptX, ballCptY, size, size)
-		self.speed = math.sqrt(balldx**2 + balldy**2)
-		self.radius = size / 2
+class Circle(object):
+	def __init__(self, screen, color, pos, radius, outline=0):
+		self.screen = screen;
+		self.color = color;
+		self.pos = pos;
+		self.radius = radius;
+		self.outline = outline;
+		self.balldx = 2;
+		self.balldy = 1;
+		self.speed = math.sqrt(self.balldx**2 + self.balldy**2)
+	# put into position
+	def draw(self):
+		self.rect = circle(self.screen, self.color, self.pos, self.radius, self.outline)
 
-	def update(self, *args):
-		self.prev_rect = self.rect
-		self.rect = pygame.Rect(self.ballCptX, self.ballCptY, self.size, self.size)
-		return super(Ball, self).update(*args)
+	def setPos(self, xpos, ypos):
+		self.pos = (xpos, ypos)
 
-	def set_color(self, new_color):
-		self.color = new_color
-		pygame.draw.circle(self.image, THECOLORS[new_color], (self.size/2, self.size/2), self.size/2)
-
-	def getBallCptX(self):
-		return self.ballCptX
-
-	def getBallCptY(self):
-		return self.ballCptY
-
-	def getBalldx(self):
-		return self.balldx
-
-	def getBalldy(self):
-		return self.balldy
-
-	def setBallCptX(self, x):
-		self.ballCptX = x
-
-	def setBallCptY(self, y):
-		self.ballCptY = y
-
-	def setBalldx(self, x):
-		self.balldx = x
-
-	def setBalldy(self, y):
-		self.balldy = y
-
-	def getRadius(self):
-		return self.radius
+class Ball(Circle):
+	def change(self):
+		newx = int(self.pos[0])+self.balldx
+		newy = int(self.pos[1])+self.balldy
+		self.pos = (newx, newy)
+		self.draw()
 
 block1 = Block(120, 60, 60, 30, THECOLORS["blue"])
 block2 = Block(60, 60, 60, 30, THECOLORS["green"])
@@ -112,81 +85,89 @@ class Game(object):
 		self.background.convert()
 
 		self.pieces_group = sprite.Group(block1, block2, block3, block4, block5, block6, block7, block8, block9, block10)
-		self.ball_group = sprite.Group()
 		self.paddle_group = sprite.Group()
 
 		self.image1 = pygame.SurfaceType((15, 40))
 		pygame.draw.rect(self.image1, THECOLORS["red"], pygame.Rect(0, 0, 90, 6))
 
-		self.ball = Ball()
+		self.ball = Ball(self.screen, THECOLORS["white"], (100, 10), 12)
 		self.paddle = Paddle(self.image1)
 
-		self.ballCptX = self.ball.getBallCptX()
-		self.ballCptY = self.ball.getBallCptY()
-		self.balldx = self.ball.getBalldx()
-		self.balldy = self.ball.getBalldy()
 		self.paddleCpt = self.paddle.getPaddleCpt()
-		self.radius = self.ball.getRadius()
 
-		self.ball.add(self.ball_group)
 		self.paddle.add(self.paddle_group)
 
 	def draw(self):
+		self.screen.fill(THECOLORS["black"])
 		self.pieces_group.clear(self.screen, self.background)
 		self.pieces_group.draw(self.screen)
-
-		self.ball_group.clear(self.screen, self.background)
-		self.ball_group.draw(self.screen)
 
 		self.paddle_group.draw(self.screen)
 
 	def doUpdate(self):
 		pygame.display.set_caption('Python Kinect Game %d fps' % clock.get_fps())
-		self.ball.update()
 		self.draw()
+		self.ball.change()
+
+		pygame.display.update()
 
 	def play(self):
 		while (self.numBalls > 0):
 
-			if (self.ballCptX - self.radius <= 0 or self.ballCptX + self.radius >= 200):
-				self.balldx *= -1
+			if (self.ball.pos[0] - self.ball.radius <= 0 or self.ball.pos[0] + self.ball.radius >= 200):
+				self.ball.balldx *= -1
 
-			if (self.ballCptY + self.radius >= 99):
-				self.balldy *= -1
+			if (self.ball.pos[1] + self.ball.radius >= 99):
+				self.ball.balldy *= -1
 
-			if (self.ballCptY <= -2):
+			if (self.ball.pos[1] <= -2):
 				self.numBalls -= 1
-				self.lives.setText("Lives: %i" % self.numBalls)
-				time.sleep(2)
-				self.ball.move(self.paddleCpt - self.ballCptX, 5 - self.ballCptY)
-				self.ballCptX = self.paddleCpt
-				self.ballCptY = 5
-				self.balldy = random.choice([1, 2])
+				self.ball.setPos(self.paddleCpt, 10)
+				self.ball.balldy = random.choice([1, 2])
 
-			elif (self.ballCptY <= 5 and self.ballCptX >= self.paddleCpt - 15 and self.ballCptX <= self.paddleCpt+15):
-				self.angle = math.atan2(self.balldx, self.balldy)
-				if (self.ballCptX == self.paddleCpt):
-					self.balldx = 0
-					self.balldy *= -1
+			elif (self.ball.pos[1] <= 5 and self.ball.pos[0] >= self.paddleCpt - 15 and self.ball.pos[0] <= self.paddleCpt+15):
+				print ("test")
+				self.angle = math.atan2(self.ball.balldx, self.ball.balldy)
+				if (self.ball.pos[0] == self.paddleCpt):
+					self.ball.balldx = 0
+					self.ball.balldy *= -1
+					print("1")
 
-				if (self.ballCptX < self.paddleCpt):
-					self.angle = 90 - 14/3 * (self.paddleCpt - self.ballCptX)
-					self.balldy = math.sin(self.angle) * self.speed
-					self.balldx = math.cos(self.angle) * self.speed
+				if (self.ball.pos[0] < self.paddleCpt):
+					self.angle = 90 - 14/3 * (self.paddleCpt - self.ball.pos[0])
+					self.ball.balldy = math.sin(self.angle) * self.ball.speed
+					self.ball.balldx = math.cos(self.angle) * self.ball.speed
+					print("2")
 
-				if (self.ballCptX > self.paddleCpt):
-					self.angle = 90 + 14/3 * (ballCptX - paddleCpt)
-					self.balldy = math.sin(self.angle) * self.speed
-					self.balldx = math.cos(self.angle) * self.speed
+				if (self.ball.pos[0] > self.paddleCpt):
+					self.angle = 90 + 14/3 * (self.ball.pos[0] - self.paddleCpt)
+					self.ball.balldy = math.sin(self.angle) * self.ball.speed
+					self.ball.balldx = math.cos(self.angle) * self.ball.speed
+					print("3")
 
-			self.totalx = self.ballCptX + self.balldx
-			self.totaly = self.ballCptY + self.balldy
-			self.ball.setBallCptX(self.totalx)
-			self.ball.setBallCptY(self.totaly)
-			self.ball.setBalldx = self.balldx
-			self.ball.setballdy = self.balldy
-			print(self.balldy)
-			print(self.balldx)
+			print("BallCptX1 = ")
+			print(self.ball.pos[0])
+			print("BallCptY1 = ")
+			print(self.ball.pos[1])
+			print("ball.balldx = ")
+			print(self.ball.balldx)
+			print("ball.balldy = ")
+			print(self.ball.balldy)
+
+			self.totalx = self.ball.pos[0] + self.ball.balldx
+			self.totaly = self.ball.pos[1] + self.ball.balldy
+			self.ball.setPos(self.totalx, self.totaly)
+			self.ball.balldx = self.ball.balldx
+			self.ball.balldy = self.ball.balldy
+
+			print("Totalx = ")
+			print(self.totalx)
+			print("Totaly = ")
+			print(self.totaly)
+			print("BallCptX2 = ")
+			print(self.ball.pos[0])
+			print("BallCptY2 = ")
+			print(self.ball.pos[1])
 
 			self.doUpdate()
 
