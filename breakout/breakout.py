@@ -7,11 +7,12 @@ import random
 import time
 
 class NotABall(sprite.Sprite):
-    def hit_by_ball(self, cur_ball):
-        pass
+	def hit_by_ball(self, cur_ball):
+		pass
 
 class Paddle(pygame.sprite.DirtySprite, NotABall):
 	def __init__(self, image):
+
 		self.image = image
 		self.dirty = 2
 		self.rect = Rect(85, 3, 30, 2)
@@ -23,6 +24,7 @@ class Paddle(pygame.sprite.DirtySprite, NotABall):
 
 class Block(NotABall):
 	def __init__(self, x, y, w, h, color):
+		super(Block, self).__init__()
 		self.size = Rect(0, 0, w, h)
 		self.rect = Rect(x, y, w, h)
 		self.color = color
@@ -30,67 +32,67 @@ class Block(NotABall):
 		pygame.draw.rect(self.image, color, self.size)
 
 class Ball(sprite.Sprite):
-    def __init__(self, color = 'white', size = 2, direction = math.atan2(1, .5), ballCptX = 100, ballCptY = 5, balldx = random.choice([2, -2]), balldy = random.choice([1, 2])):
-        super(Ball, self).__init__()
-        self.size = size
-        self.color = color
-        self.image = pygame.SurfaceType((size, size))
-        self.set_color(color)
-        self.ballCptX = ballCptX
-        self.ballCptY = ballCptY
-        self.balldx = balldx
-        self.balldy = balldy
-        self.old_pos = None        
-        self.rect = pygame.Rect(ballCptX, ballCptY, size, size)
-        self.speed = math.sqrt(balldx**2 + balldy**2)
-        self.radius = size / 2
+	def __init__(self, color = 'white', size = 2, direction = math.atan2(1, .5), ballCptX = 100, ballCptY = 5, balldx = random.choice([2, -2]), balldy = random.choice([1, 2])):
+		super(Ball, self).__init__()
+		self.size = size
+		self.color = color
+		self.image = pygame.SurfaceType((size, size))
+		self.set_color(color)
+		self.ballCptX = ballCptX
+		self.ballCptY = ballCptY
+		self.balldx = balldx
+		self.balldy = balldy
+		self.old_pos = None
+		self.rect = pygame.Rect(ballCptX, ballCptY, size, size)
+		self.speed = math.sqrt(balldx**2 + balldy**2)
+		self.radius = size / 2
 
-    def update(self, *args):
-    	self.prev_rect = self.rect
-        self.rect = pygame.Rect(self.ballCptX, self.ballCptY, self.size, self.size)
-        return super(Ball, self).update(*args)
+	def update(self, *args):
+		self.prev_rect = self.rect
+		self.rect = pygame.Rect(self.ballCptX, self.ballCptY, self.size, self.size)
+		return super(Ball, self).update(*args)
 
-    def set_color(self, new_color):
-        self.color = new_color
-        pygame.draw.circle(self.image, THECOLORS[new_color], (self.size/2, self.size/2), self.size/2)
+	def set_color(self, new_color):
+		self.color = new_color
+		pygame.draw.circle(self.image, THECOLORS[new_color], (self.size/2, self.size/2), self.size/2)
 
-    def getBallCptX(self):
-    	return self.ballCptX
+	def getBallCptX(self):
+		return self.ballCptX
 
-    def getBallCptY(self):
-    	return self.ballCptY
+	def getBallCptY(self):
+		return self.ballCptY
 
-    def getBalldx(self):
-    	return self.balldx
+	def getBalldx(self):
+		return self.balldx
 
-    def getBalldy(self):
-    	return self.balldy
+	def getBalldy(self):
+		return self.balldy
 
-    def setBallCptX(self, x):
-    	self.ballCptX = x
+	def setBallCptX(self, x):
+		self.ballCptX = x
 
-    def setBallCptY(self, y):
-    	self.ballCptY = y
+	def setBallCptY(self, y):
+		self.ballCptY = y
 
-    def setBalldx(self, x):
-    	self.balldx = x
+	def setBalldx(self, x):
+		self.balldx = x
 
-    def setBalldy(self, y):
-    	self.balldy = y
+	def setBalldy(self, y):
+		self.balldy = y
 
-    def getRadius(self):
-    	return self.radius
+	def getRadius(self):
+		return self.radius
 
-block1 = Block(80, 60, 20, 10, THECOLORS["blue"])
-block2 = Block(60, 60, 20, 10, THECOLORS["green"])
-block3 = Block(60, 60, 20, 10, THECOLORS["yellow"])
-block4 = Block(100, 60, 20, 10, THECOLORS["orange"])
-block5 = Block(120, 60, 20, 10, THECOLORS["red"])
-block6 = Block(120, 60, 20, 10, THECOLORS["purple"])
-block7 = Block(60, 70, 20, 10, THECOLORS["pink"])
-block8 = Block(120, 80, 20, 10, THECOLORS["black"])
-block9 = Block(80, 80, 20, 10, THECOLORS["tan"])
-block10 = Block(140, 80, 20, 10, THECOLORS["white"])
+block1 = Block(120, 60, 60, 30, THECOLORS["blue"])
+block2 = Block(60, 60, 60, 30, THECOLORS["green"])
+block3 = Block(60, 120, 60, 30, THECOLORS["yellow"])
+block4 = Block(180, 60, 60, 30, THECOLORS["orange"])
+block5 = Block(240, 60, 60, 30, THECOLORS["red"])
+block6 = Block(240, 90, 60, 30, THECOLORS["purple"])
+block7 = Block(60, 90, 60, 30, THECOLORS["pink"])
+block8 = Block(180, 120, 60, 30, THECOLORS["grey"])
+block9 = Block(120, 120, 60, 30, THECOLORS["tan"])
+block10 = Block(240, 120, 60, 30, THECOLORS["white"])
 
 clock = pygame.time.Clock() 
 
@@ -109,11 +111,11 @@ class Game(object):
 		self.background.fill(THECOLORS["black"])
 		self.background.convert()
 
-		self.pieces_group = sprite.Group()
+		self.pieces_group = sprite.Group(block1, block2, block3, block4, block5, block6, block7, block8, block9, block10)
 		self.ball_group = sprite.Group()
 
 		self.image1 = pygame.SurfaceType((15, 40))
-		pygame.draw.rect(self.image1, THECOLORS["red"], pygame.Rect(0, 0, 30, 2))
+		pygame.draw.rect(self.image1, THECOLORS["red"], pygame.Rect(0, 0, 90, 6))
 
 		self.ball = Ball()
 		self.paddle = Paddle(self.image1)
@@ -125,25 +127,14 @@ class Game(object):
 		self.paddleCpt = self.paddle.getPaddleCpt()
 		self.radius = self.ball.getRadius()
 
-		block1.add(self.pieces_group)
-		block2.add(self.pieces_group)
-		block3.add(self.pieces_group)
-		block4.add(self.pieces_group)
-		block5.add(self.pieces_group)
-		block6.add(self.pieces_group)
-		block7.add(self.pieces_group)
-		block8.add(self.pieces_group)
-		block9.add(self.pieces_group)
-		block10.add(self.pieces_group)
-
-		ball.add(self.ball_group)
+		self.ball.add(self.ball_group)
 
 	def draw(self):
 		self.pieces_group.clear(self.screen, self.background)
 		self.pieces_group.draw(self.screen)
 
-        self.ball_group.clear(self.screen, self.background)
-        self.ball_group.draw(self.screen)
+		self.ball_group.clear(self.screen, self.background)
+		self.ball_group.draw(self.screen)
 
 	def doUpdate(self):
 		pygame.display.set_caption('Python Kinect Game %d fps' % clock.get_fps())
@@ -205,8 +196,6 @@ class Game(object):
 			self.ball.setBallCptX(self.ballCptX)
 			self.ball.setBallCptY(self.ballCptY)
 
-			print ("test")
-
 			self.doUpdate()
 
 			pygame.display.flip()
@@ -218,9 +207,9 @@ class Game(object):
 			t.setText("You won!")
 
 if __name__ == '__main__':
-    # Initialize PyGame
-    pygame.init()
-    pygame.font.init()
+	# Initialize PyGame
+	pygame.init()
+	pygame.font.init()
 
-    game = Game()
-    game.play()
+	game = Game()
+	game.play()
