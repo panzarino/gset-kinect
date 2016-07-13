@@ -109,6 +109,9 @@ class Game(object):
 		self.background.fill(THECOLORS["black"])
 		self.background.convert()
 
+		self.pieces_group = sprite.Group()
+		self.ball_group = sprite.Group()
+
 		self.image1 = pygame.SurfaceType((15, 40))
 		pygame.draw.rect(self.image1, THECOLORS["red"], pygame.Rect(0, 0, 30, 2))
 
@@ -121,6 +124,26 @@ class Game(object):
 		self.balldy = self.ball.getBalldy()
 		self.paddleCpt = self.paddle.getPaddleCpt()
 		self.radius = self.ball.getRadius()
+
+		block1.add(self.pieces_group)
+		block2.add(self.pieces_group)
+		block3.add(self.pieces_group)
+		block4.add(self.pieces_group)
+		block5.add(self.pieces_group)
+		block6.add(self.pieces_group)
+		block7.add(self.pieces_group)
+		block8.add(self.pieces_group)
+		block9.add(self.pieces_group)
+		block10.add(self.pieces_group)
+
+		ball.add(self.ball_group)
+
+	def draw(self):
+		self.pieces_group.clear(self.screen, self.background)
+		self.pieces_group.draw(self.screen)
+
+        self.ball_group.clear(self.screen, self.background)
+        self.ball_group.draw(self.screen)
 
 	def doUpdate(self):
 		pygame.display.set_caption('Python Kinect Game %d fps' % clock.get_fps())
