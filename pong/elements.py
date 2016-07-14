@@ -76,3 +76,9 @@ class Text(object):
 	def change(self, text=""):
 		self.content = text
 		self.draw()
+def center_text(font, string, y, z):
+	x = w = 0
+	dim = font.size(string)
+	width = w + (y - w - dim[0]) / 2
+	height = x + (z - x - dim[1]) / 2
+	return (width, height)

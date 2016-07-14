@@ -97,6 +97,7 @@ class Controller(object):
 		font_location = pygame.font.match_font("stormfazeregular")
 		font_size = int(game.screensize[0]/12)
 		self.font = pygame.font.Font(font_location, font_size)
+		self.splash = pygame.font.Font(font_location, font_size/3)
 		self.color = {}
 		self.color['left'] = FUCHSIA
 		self.color['right'] = AQUA
@@ -137,6 +138,21 @@ class Controller(object):
 		self.right.draw()
 	# method that sets up the game
 	def start(self):
+		# show black with text
+		self.game.render()
+		self.intro_text1_pos = center_text(self.splash, "Welcome to Push-up Pong", self.game.screensize[0], self.game.screensize[1])
+		self.intro_text2_pos = center_text(self.splash, "You have 10 seconds until the game starts!", self.game.screensize[0], self.game.screensize[1])
+		self.intro_text3_pos = center_text(self.splash, "Get Ready!", self.game.screensize[0], self.game.screensize[1])
+		self.intro_text1_pos = (self.intro_text1_pos[0]-self.game.screensize[0]/8, self.intro_text1_pos[1])
+		self.intro_text3_pos = (self.intro_text3_pos[0]+self.game.screensize[0]/8, self.intro_text3_pos[1])
+		self.intro_text1 = Text(self.game.screen, self.splash, "Welcome to Push-up Pong", self.color['text'], self.intro_text1_pos)
+		self.intro_text1.draw()
+		self.intro_text2 = Text(self.game.screen, self.splash, "You have 10 seconds until the game starts!", self.color['text'], self.intro_text2_pos)
+		self.intro_text2.draw()
+		self.intro_text3 = Text(self.game.screen, self.splash, "Get Ready!", self.color['text'], self.intro_text3_pos)
+		self.intro_text3.draw()
+		self.game.render()
+		self.game.delay(8)
 		# draw all objects
 		self.set()
 		# draw midline and hidden lines around outline of screen
@@ -146,6 +162,7 @@ class Controller(object):
 		self.right_score.draw()
 		# show those elements
 		self.game.render()
+		self.game.delay(2)
 	# method that continues the game
 	def go(self):
 		# move paddles to kinect locations

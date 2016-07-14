@@ -14,9 +14,6 @@ def run():
 	controller = Controller(game)
 	controller.start()
 
-	# get user into position
-	sleep(3)
-
 	# keep looping the game
 	while True:
 
