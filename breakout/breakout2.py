@@ -15,14 +15,20 @@ ball.draw(win)						# use leg? to start (kick leg)
 ballCptX = 100
 ballCptY = 5
 radius = 2
-balldx = random.choice([2])
-balldy = 2#])
+balldx = random.choice([0.5, 1, 1.5, 2, -0.5, -1, -1.5, -2])
+balldy = random.choice([0.5, 1, 1.5, 2])
 speed = math.sqrt(balldx**2 + balldy**2)
 paddleCpt = 100
 numBalls = 3
-lives = Text(Point(190, 90), "Lives: %i" % numBalls)
+lives = Text(Point(170, 90), "Balls: ")
 lives.setSize(16)
 lives.draw(win)
+ball1 = Circle(Point(177, 90), 2)
+ball2 = Circle(Point(183, 90), 2)
+ball3 = Circle(Point(189, 90), 2)
+ball1.draw(win)
+ball2.draw(win)
+ball3.draw(win)
 block1 = Polygon(Point(100, 50), Point(100, 60), Point(80, 60), Point(80, 50))
 block2 = Polygon(Point(80, 50), Point(80, 60), Point(60, 60), Point(60, 50))
 block3 = Polygon(Point(80, 70), Point(60, 70), Point(60, 60), Point(80, 60))
@@ -42,7 +48,7 @@ block6.setFill("purple")
 block7.setFill("pink")
 block8.setFill("black")
 block9.setFill("tan")
-block10.setFill("light blue")
+block10.setFill("sky blue")
 block1.draw(win)
 block2.draw(win)
 block3.draw(win)
@@ -63,50 +69,71 @@ dy.setSize(16)
 dx.draw(win)
 dy.draw(win)
 blockExists = [True, True, True, True, True, True, True, True, True, True]
+blockArray = Text(Point(100, 35), blockExists)
+blockArray.setSize(16)
+blockArray.draw(win)
+time.sleep(2)
+t.setText(3)
+time.sleep(1)
+t.setText(2)
+time.sleep(1)
+t.setText(1)
+time.sleep(1)
+t.setText("Begin!")
 while (numBalls > 0 and blockExists != [False, False, False, False, False, False, False, False, False, False]):
-	if (paddleCpt == ballCptX):
+	if (abs(paddleCpt - ballCptX) <= 2):
 		pass
-	elif (paddleCpt < ballCptX and paddleCpt < 185):
-		paddle.move(2,0)
-		paddleCpt += 2
-	elif (paddleCpt > ballCptX and paddleCpt > 15):
-		paddle.move(-2,0)
-		paddleCpt -= 2
+	elif (paddleCpt < ballCptX and paddleCpt < 184):
+		paddle.move(1,0)
+		paddleCpt += 1
+	elif (paddleCpt > ballCptX and paddleCpt > 16):
+		paddle.move(-1,0)
+		paddleCpt -= 1
 
 	ball.move(balldx, balldy)
 	ballCptX += balldx
 	ballCptY += balldy
-	if (ballCptX-radius <= 0 or ballCptX+radius >= 200):
+	if (ballCptX-radius <= -1 or ballCptX+radius >= 201):
 		balldx *= -1
 		dx.setText("dx = %f" % balldx)
-	if (ballCptY+radius >= 99):
+	if (ballCptY+radius >= 101):
 		balldy *= -1
 		dy.setText("dy = %f" % balldy)
-	if (ballCptY <= -2):
+	if (ballCptY <= -3):
 		numBalls -= 1
-		lives.setText("Lives: %i" % numBalls)
+		lives.setText("Balls: ")
+		if (numBalls == 2):
+			ball3.undraw()
+		elif (numBalls == 1):
+			ball2.undraw()
+		elif (numBalls == 0):
+			ball1.undraw()
+			break
 		time.sleep(2)
 		ball.move(paddleCpt-ballCptX, 5-ballCptY)
 		ballCptX = paddleCpt
 		ballCptY = 5
-		balldx = random.choice([1, 0.5])
+		win.getMouse()
+		balldx = random.choice([0.5, 1, 1.5, 2, -0.5, -1, -1.5, -2])
 		dx.setText("dx = %f" % balldx)
-		balldy = random.choice([1, 0.5])
+		balldy = random.choice([0.5, 1, 1.5, 2])
 		dy.setText("dy = %f" % balldy)
+		speed = math.sqrt(balldx**2 + balldy**2)
 	elif (ballCptY <= 5 and ballCptX >= paddleCpt-15 and ballCptX <= paddleCpt+15):	# paddle collision
 		if (ballCptX == paddleCpt):
-			balldx = 0.05
-			dx.setText("dx = %f" % balldx)
-			balldy *= -1
+			angle = 90 + 5 * (paddleCpt - ballCptX) + 0.05
+			balldy = math.sin(math.radians(angle)) * speed
 			dy.setText("dy = %f" % balldy)
+			balldx = math.cos(math.radians(angle)) * speed
+			dx.setText("dx = %f" % balldx)
 		elif (ballCptX < paddleCpt):
-			angle = 90 - 6 * (paddleCpt - ballCptX)
+			angle = 90 + 5 * (paddleCpt - ballCptX)
 			balldy = math.sin(math.radians(angle)) * speed
 			dy.setText("dy = %f" % balldy)
 			balldx = math.cos(math.radians(angle)) * speed
 			dx.setText("dx = %f" % balldx)
 		elif (ballCptX > paddleCpt):
-			angle = 90 - 6 * (ballCptX - paddleCpt)
+			angle = 90 - 5 * (ballCptX - paddleCpt)
 			balldy = math.sin(math.radians(angle)) * speed
 			dy.setText("dy = %f" % balldy)
 			balldx = math.cos(math.radians(angle)) * speed
@@ -114,112 +141,134 @@ while (numBalls > 0 and blockExists != [False, False, False, False, False, False
 	
 	# block collisions
 	if (ballCptX+radius >= 80 and ballCptX-radius <= 100):
-		if ((ballCptX+radius <= 84 or ballCptX-radius >= 96) and (50 <= ballCptY <= 60) and blockExists[0]):		# block 1 left/right side
+		if ((ballCptX+radius <= 82 and balldx > 0 or ballCptX-radius >= 98 and balldx < 0) and ballCptY+radius >= 50 and ballCptY-radius <= 60 and blockExists[0]):		# block 1 left/right side
 			balldx *= -1
 			dx.setText("dx = %f" % balldx)
 			block1.undraw()
 			blockExists[0] = False
-		elif ((50 <= ballCptY+radius <= 55 or 55 <= ballCptY-radius <= 60) and blockExists[0]):	# block 1 top/bottom side 
+			blockArray.setText(blockExists)
+		elif (80 <= ballCptX <= 100 and (50 < ballCptY+radius <= 54 or 56 <= ballCptY-radius < 60) and blockExists[0]):	# block 1 top/bottom side 
 			balldy *= -1
 			dy.setText("dy = %f" % balldy)
 			block1.undraw()
 			blockExists[0] = False
-		if ((ballCptX+radius <= 84 or ballCptX-radius >= 96) and 70 <= ballCptY <= 80 and blockExists[8]):		# block 9 left/right side
+			blockArray.setText(blockExists)
+		if ((ballCptX+radius <= 82 and balldx > 0 or ballCptX-radius >= 98 and balldx < 0) and ballCptY+radius >= 70 and ballCptY-radius <= 80 and blockExists[8]):		# block 9 left/right side
 			balldx *= -1
 			dx.setText("dx = %f" % balldx)
 			block9.undraw()
 			blockExists[8] = False
-		elif ((70 <= ballCptY+radius <= 75 or 75 <= ballCptY-radius <= 80) and blockExists[8]):	# block 9 top/bottom side 
+			blockArray.setText(blockExists)
+		elif (80 <= ballCptX <= 100 and (70 < ballCptY+radius <= 74 or 76 <= ballCptY-radius < 80) and blockExists[8]):	# block 9 top/bottom side 
 			balldy *= -1
 			dy.setText("dy = %f" % balldy)
 			block9.undraw()
 			blockExists[8] = False
+			blockArray.setText(blockExists)
 
-	elif (ballCptX+radius >= 60 and ballCptX-radius <= 80):
-		if ((ballCptX+radius <= 64 or ballCptX-radius >= 76) and 50 <= ballCptY <= 60 and blockExists[1]):		# block 2 left/right side
-			balldx *= -1
-			dx.setText("dx = %f" % balldx)
-			block2.undraw()
-			blockExists[1] = False
-		elif ((50 <= ballCptY+radius <= 55 or 55 <= ballCptY-radius <= 60) and blockExists[1]):	# block 2 top/bottom side 
-			balldy *= -1
-			dy.setText("dy = %f" % balldy)
-			block2.undraw()
-			blockExists[1] = False
-		if ((ballCptX+radius <= 64 or ballCptX-radius >= 76) and 60 <= ballCptY <= 70 and blockExists[2]):		# block 3 left/right side
+	if (ballCptX+radius >= 60 and ballCptX-radius <= 80):
+		if ((ballCptX+radius <= 62 and balldx > 0 or ballCptX-radius >= 78 and balldx < 0) and ballCptY+radius >= 60 and ballCptY-radius <= 70 and blockExists[2]):		# block 3 left/right side
 			balldx *= -1
 			dx.setText("dx = %f" % balldx)
 			block3.undraw()
 			blockExists[2] = False
-		elif ((60 <= ballCptY+radius <= 65 or 65 <= ballCptY-radius <= 70) and blockExists[2]):	# block 3 top/bottom side 
+			blockArray.setText(blockExists)
+		elif (60 <= ballCptX <= 80 and (60 < ballCptY+radius <= 64 or 66 <= ballCptY-radius < 70) and blockExists[2]):	# block 3 top/bottom side 
 			balldy *= -1
 			dy.setText("dy = %f" % balldy)
 			block3.undraw()
 			blockExists[2] = False
-		if ((ballCptX+radius <= 64 or ballCptX-radius >= 76) and 70 <= ballCptY <= 80 and blockExists[6]):		# block 7 left/right side
+			blockArray.setText(blockExists)
+		if ((ballCptX+radius <= 62 and balldx > 0 or ballCptX-radius >= 78 and balldx < 0) and ballCptY+radius >= 50 and ballCptY-radius <= 60 and blockExists[1]):		# block 2 left/right side
+			balldx *= -1
+			dx.setText("dx = %f" % balldx)
+			block2.undraw()
+			blockExists[1] = False
+			blockArray.setText(blockExists)
+		elif (60 <= ballCptX <= 80 and (50 < ballCptY+radius <= 54 or 56 <= ballCptY-radius < 60) and blockExists[1]):	# block 2 top/bottom side 
+			balldy *= -1
+			dy.setText("dy = %f" % balldy)
+			block2.undraw()
+			blockExists[1] = False
+			blockArray.setText(blockExists)
+		if ((ballCptX+radius <= 62 and balldx > 0 or ballCptX-radius >= 78 and balldx < 0) and ballCptY+radius >= 70 and ballCptY-radius <= 80 and blockExists[6]):		# block 7 left/right side
 			balldx *= -1
 			dx.setText("dx = %f" % balldx)
 			block7.undraw()
 			blockExists[6] = False
-		elif ((70 <= ballCptY+radius <= 75 or 75 <= ballCptY-radius <= 80) and blockExists[6]):	# block 7 top/bottom side 
+			blockArray.setText(blockExists)
+		elif (60 <= ballCptX <= 80 and (70 < ballCptY+radius <= 74 or 76 <= ballCptY-radius < 80) and blockExists[6]):	# block 7 top/bottom side 
 			balldy *= -1
 			dy.setText("dy = %f" % balldy)
 			block7.undraw()
 			blockExists[6] = False
+			blockArray.setText(blockExists)
 
-	elif (ballCptX+radius >= 100 and ballCptX-radius <= 120):
-		if ((ballCptX+radius <= 104 or ballCptX-radius >= 116) and 50 <= ballCptY <= 60 and blockExists[3]):		# block 4 left/right side
+
+if (ballCptX+radius >= 100 and ballCptX-radius <= 120):
+		if ((ballCptX+radius <= 102 and balldx > 0  or ballCptX-radius >= 118 and balldx < 0) and ballCptY+radius >= 50 and ballCptY-radius <= 60 and blockExists[3]):		# block 4 left/right side
 			balldx *= -1
 			dx.setText("dx = %f" % balldx)
 			block4.undraw()
 			blockExists[3] = False
-		elif ((50 <= ballCptY+radius <= 55 or 55 <= ballCptY-radius <= 60) and blockExists[3]):	# block 4 top/bottom side 
+			blockArray.setText(blockExists)
+		elif (100 <= ballCptX <= 120 and (50 < ballCptY+radius <= 54 or 56 <= ballCptY-radius < 60) and blockExists[3]):	# block 4 top/bottom side 
 			balldy *= -1
 			dy.setText("dy = %f" % balldy)
 			block4.undraw()
 			blockExists[3] = False
-		if ((ballCptX+radius <= 104 or ballCptX-radius >= 116) and 70 <= ballCptY <= 80 and blockExists[7]):		# block 8 left/right side
+			blockArray.setText(blockExists)
+		if ((ballCptX+radius <= 102 and balldx > 0 or ballCptX-radius >= 118 and balldx < 0) and ballCptY+radius >= 70 and ballCptY-radius <= 80 and blockExists[7]):		# block 8 left/right side
 			balldx *= -1
 			dx.setText("dx = %f" % balldx)
 			block8.undraw()
 			blockExists[7] = False
-		elif ((70 <= ballCptY+radius <= 75 or 75 <= ballCptY-radius <= 80) and blockExists[7]):	# block 8 top/bottom side 
+			blockArray.setText(blockExists)
+		elif (100 <= ballCptX <= 120 and (70 < ballCptY+radius <= 74 or 76 <= ballCptY-radius < 80) and blockExists[7]):	# block 8 top/bottom side 
 			balldy *= -1
 			dy.setText("dy = %f" % balldy)
 			block8.undraw()
 			blockExists[7] = False
+			blockArray.setText(blockExists)
 
-	elif (ballCptX+radius >= 120 and ballCptX-radius <= 140):
-		if ((ballCptX+radius <= 124 or ballCptX-radius >= 136) and 50 <= ballCptY <= 60 and blockExists[4]):		# block 5 left/right side
-			balldx *= -1
-			dx.setText("dx = %f" % balldx)
-			block5.undraw()
-			blockExists[4] = False
-		elif ((50 <= ballCptY+radius <= 55 or 55 <= ballCptY-radius <= 60) and blockExists[4]):	# block 5 top/bottom side 
-			balldy *= -1
-			dy.setText("dy = %f" % balldy)
-			block5.undraw()
-			blockExists[4] = False
-		if ((ballCptX+radius <= 124 or ballCptX-radius >= 136) and 60 <= ballCptY <= 70 and blockExists[5]):		# block 6 left/right side
+
+if (ballCptX+radius >= 120 and ballCptX-radius <= 140):
+		if ((ballCptX+radius <= 122 and balldx > 0 or ballCptX-radius >= 138 and balldx < 0) and ballCptY+radius >= 60 and ballCptY-radius <= 70 and blockExists[5]):		# block 6 left/right side
 			balldx *= -1
 			dx.setText("dx = %f" % balldx)
 			block6.undraw()
 			blockExists[5] = False
-		elif ((60 <= ballCptY+radius <= 65 or 65 <= ballCptY-radius <= 70) and blockExists[5]):	# block 6 top/bottom side 
+			blockArray.setText(blockExists)
+		elif (120 <= ballCptX <= 140 and (60 < ballCptY+radius <= 64 or 66 <= ballCptY-radius < 70) and blockExists[5]):	# block 6 top/bottom side 
 			balldy *= -1
 			dy.setText("dy = %f" % balldy)
 			block6.undraw()
 			blockExists[5] = False
-		if ((ballCptX+radius <= 124 or ballCptX-radius >= 136) and 70 <= ballCptY <= 80 and blockExists[9]):		# block 10 left/right side
+			blockArray.setText(blockExists)
+		if ((ballCptX+radius <= 122 and balldx > 0 or ballCptX-radius >= 138 and balldx < 0) and ballCptY+radius >= 50 and ballCptY-radius <= 60 and blockExists[4]):		# block 5 left/right side
+			balldx *= -1
+			dx.setText("dx = %f" % balldx)
+			block5.undraw()
+			blockExists[4] = False
+			blockArray.setText(blockExists)
+		elif (120 <= ballCptX <= 140 and (50 < ballCptY+radius <= 54 or 56 <= ballCptY-radius < 60) and blockExists[4]):	# block 5 top/bottom side 
+			balldy *= -1
+			dy.setText("dy = %f" % balldy)
+			block5.undraw()
+			blockExists[4] = False
+			blockArray.setText(blockExists)
+		if ((ballCptX+radius <= 122 and balldx > 0 or ballCptX-radius >= 138 and balldx < 0) and ballCptY+radius >= 70 and ballCptY-radius <= 80 and blockExists[9]):		# block 10 left/right side
 			balldx *= -1
 			dx.setText("dx = %f" % balldx)
 			block10.undraw()
 			blockExists[9] = False
-		elif ((70 <= ballCptY+radius <= 75 or 75 <= ballCptY-radius <= 80) and blockExists[9]):	# block 10 top/bottom side 
+			blockArray.setText(blockExists)
+		elif (120 <= ballCptX <= 140 and (70 < ballCptY+radius <= 74 or 76 <= ballCptY-radius < 80) and blockExists[9]):	# block 10 top/bottom side 
 			balldy *= -1
 			dy.setText("dy = %f" % balldy)
 			block10.undraw()
 			blockExists[9] = False
+			blockArray.setText(blockExists)
 if numBalls == 0:
 	t.setText("You lost!")
 else:
