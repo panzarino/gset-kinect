@@ -13,7 +13,7 @@ class Paddle(object):
 		self.color = color
 		self.rectlist = [x, y, length, width]
 		self.outline = outline;
-		self.newy = y
+		self.newx = x
 		self.diff = 0
 		self.center = x + length / 2
 
@@ -21,15 +21,19 @@ class Paddle(object):
 		self.rect = rect(self.screen, self.color, self.rectlist, self.outline)
 
 	def change(self):
-		if (abs(self.newy-self.rectlist[1])>4):
-			self.rectlist = [self.rectlist[0], self.rectlist[1]+self.diff, self.rectlist[2], self.rectlist[3]]
+		if (abs(self.newx-self.rectlist[0])>4):
+			self.rectlist = [self.rectlist[0] + self.diff, self.rectlist[1], self.rectlist[2], self.rectlist[3]]
 		self.draw()
 
 	def move(self, newx):
-		self.newy = newx
+		self.newx = newx
 		current = self.rectlist[0]
 		diff = self.newx - current
 		self.diff = diff/4
+
+class NotABall(sprite.Sprite):
+    def hit_by_ball(self, cur_ball):
+        pass
 
 class Block(NotABall):
 	def __init__(self, x, y, w, h, color):
@@ -98,8 +102,8 @@ class Game(object):
 		self.image1 = pygame.SurfaceType((15, 40))
 		pygame.draw.rect(self.image1, THECOLORS["red"], pygame.Rect(0, 0, 90, 6))
 
-		self.ball = Ball(self.screen, THECOLORS["white"], (100, 10), 12)
-		self.paddle = Paddle(self.screen, THECOLORS["red"], 100, 0, 30, 5)
+		self.ball = Ball(self.screen, THECOLORS["white"], (650, 560), 12)
+		self.paddle = Paddle(self.screen, THECOLORS["red"], 600, 580, 100, 10)
 
 	def draw(self):
 		self.screen.fill(THECOLORS["black"])
@@ -117,18 +121,19 @@ class Game(object):
 	def play(self):
 		while (self.numBalls > 0):
 
-			if (self.ball.pos[0] - self.ball.radius <= 0 or self.ball.pos[0] + self.ball.radius >= 200):
+			if (self.ball.pos[0] - self.ball.radius <= 0 or self.ball.pos[0] + self.ball.radius >= 1200):
 				self.ball.balldx *= -1
 
-			if (self.ball.pos[1] + self.ball.radius >= 99):
+			if (self.ball.pos[1] + self.ball.radius <= 0):
 				self.ball.balldy *= -1
 
-			if (self.ball.pos[1] <= -2):
+			if (self.ball.pos[1] >= 610):
 				self.numBalls -= 1
-				self.ball.setPos(self.paddle.center, 10)
+				print("test")
+				self.ball.setPos(self.paddle.center, 560)
 				self.ball.balldy = random.choice([1, 2])
 
-			elif (self.ball.pos[1] <= 5 and self.ball.pos[0] >= self.paddle.center - 15 and self.ball.pos[0] <= self.paddle.center+15):
+			elif (self.ball.pos[1] >= 590 and self.ball.pos[0] >= self.paddle.center - 15 and self.ball.pos[0] <= self.paddle.center+15):
 				self.angle = math.atan2(self.ball.balldx, self.ball.balldy)
 				if (self.ball.pos[0] == self.paddle.center):
 					self.ball.balldx = 0
@@ -136,12 +141,12 @@ class Game(object):
 
 				if (self.ball.pos[0] < self.paddle.center):
 					self.angle = 90 - 14/3 * (self.paddle.center - self.ball.pos[0])
-					self.ball.balldy = math.sin(self.angle) * self.ball.speed
+					self.ball.balldy = -math.sin(self.angle) * self.ball.speed
 					self.ball.balldx = math.cos(self.angle) * self.ball.speed
 
 				if (self.ball.pos[0] > self.paddle.center):
 					self.angle = 90 + 14/3 * (self.ball.pos[0] - self.paddle.center)
-					self.ball.balldy = math.sin(self.angle) * self.ball.speed
+					self.ball.balldy = -math.sin(self.angle) * self.ball.speed
 					self.ball.balldx = math.cos(self.angle) * self.ball.speed
 
 			self.totalx = self.ball.pos[0] + self.ball.balldx
@@ -150,17 +155,10 @@ class Game(object):
 			self.ball.balldx = self.ball.balldx
 			self.ball.balldy = self.ball.balldy
 
-			self.paddle.move(self.paddle.rectlist[0] + 3)
-
 			self.doUpdate()
 
 			pygame.display.flip()
 			clock.tick(40)
-
-		if (self.numBalls == 0):
-			t.setText("You lost!")
-		else:
-			t.setText("You won!")
 
 if __name__ == '__main__':
 	# Initialize PyGame
