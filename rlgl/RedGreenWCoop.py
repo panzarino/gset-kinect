@@ -9,6 +9,7 @@ import sys
 import thread
 import itertools
 import ctypes
+import os
 
 import math
 
@@ -36,13 +37,16 @@ num_players = 0
 net_score = 0
 legs = False
 arms = False
+draw_skeleton = None
+maple_leaf_rag = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Maple Leaf Rag.wav")
+tick_tock = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Tick Tock.wav")
 
 skeleton_input = raw_input("Would you like to have a skeleton displayed?\n(y, n)")
-while(draw_skeletons == None):
+while(draw_skeleton == None):
     if skeleton_input == "y":
-        draw_skeletons = True
+        draw_skeleton = True
     elif skeleton_input == "n":
-        draw_skeletons = False
+        draw_skeleton = False
     else:
         skeleton_input = raw_input("Enter a valid value\n(y, n)")
 body_parts = raw_input("Would you like to work your upper body, lower body, or both?\n(u, l, b)")
@@ -249,7 +253,7 @@ def score_update(e, t):
 if __name__ == '__main__':
     full_screen = False
 
-    pygame.mixer.music.load("Maple Leaf Rag.wav")
+    pygame.mixer.music.load(maple_leaf_rag)
     
 
     first = True
@@ -280,7 +284,7 @@ if __name__ == '__main__':
     
     # main game loop
     done = False
-    while(pygame.event.wait().type != KINECTEVENT)
+    while(pygame.event.wait().type != KINECTEVENT):
         pass
     while not done:
         e = pygame.event.wait()
@@ -302,9 +306,9 @@ if __name__ == '__main__':
             index += 1
             if index == 2:
                 index = 0
-                pygame.mixer.music.load("Tick-Tock.wav")
+                pygame.mixer.music.load(tick_tock)
             else:
-                pygame.mixer.music.load("Maple Leaf Rag.wav")
+                pygame.mixer.music.load(maple_leaf_rag)
             pygame.mixer.music.play(0)
         dispInfo = pygame.display.Info()
         if e.type == pygame.QUIT:
@@ -340,7 +344,7 @@ myfont2 = pygame.font.SysFont("monospace", 80, bold = True)
 pos = center(myfont2, "SCORE: " + str(int(score)), 0, 0, 640, 480)
 pos2 = center(myfont2, "NET SCORE: " + str(int(net_score)), 0, 0, 640, 480)
 
-pygame.mixer.music.load("Maple Leaf Rag.wav")
+pygame.mixer.music.load(maple_leaf_rag)
 pygame.mixer.music.play(0)
 
 while((datetime.now() - t).seconds <= 5):
