@@ -52,7 +52,7 @@ class Circle(object):
 		self.radius = radius;
 		self.outline = outline;
 		self.balldx = 2;
-		self.balldy = 1;
+		self.balldy = -1;
 		self.speed = math.sqrt(self.balldx**2 + self.balldy**2)
 
 	def draw(self):
@@ -124,17 +124,23 @@ class Game(object):
 			if (self.ball.pos[0] - self.ball.radius <= 0 or self.ball.pos[0] + self.ball.radius >= 1200):
 				self.ball.balldx *= -1
 
-			if (self.ball.pos[1] + self.ball.radius <= 0):
+			if (self.ball.pos[1] + self.ball.radius <= 20):
 				self.ball.balldy *= -1
 
 			if (self.ball.pos[1] >= 610):
 				self.numBalls -= 1
-				print("test")
 				self.ball.setPos(self.paddle.center, 560)
-				self.ball.balldy = random.choice([1, 2])
+				self.ball.balldy = random.choice([-1, -2])
 
-			elif (self.ball.pos[1] >= 590 and self.ball.pos[0] >= self.paddle.center - 15 and self.ball.pos[0] <= self.paddle.center+15):
+			if (self.ball.pos[1] >= 590):
+				print("test1")
+			if(self.ball.pos[0] >= self.paddle.center - 15):
+				print("test2")
+			if(self.ball.pos[0] <= self.paddle.center+15):
+				print("test3")
+			if (self.ball.pos[1] >= 590 and self.ball.pos[0] >= self.paddle.center - 15 and self.ball.pos[0] <= self.paddle.center+15):
 				self.angle = math.atan2(self.ball.balldx, self.ball.balldy)
+				print("test")
 				if (self.ball.pos[0] == self.paddle.center):
 					self.ball.balldx = 0
 					self.ball.balldy *= -1
