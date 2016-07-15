@@ -163,6 +163,30 @@ class Controller(object):
 		# show those elements
 		self.game.render()
 		self.game.delay(2)
+	def end(self):
+		# show black with text
+		self.game.render()
+		# get scores
+		left_score = int(self.left_score.content)
+		right_score = int(self.right_score.content)
+		if (left_score < right_score):
+			text = "You win!"
+			self.color['win'] = self.color['right']
+		else:
+			text = "Computer wins!"
+			self.color['win'] = self.color['left']
+		score = "%i - %i" % (left_score, right_score)
+		self.intro_text1_pos = center_text(self.splash, text, self.game.screensize[0], self.game.screensize[1])
+		self.intro_text2_pos = center_text(self.splash, score, self.game.screensize[0], self.game.screensize[1])
+		self.intro_text1_pos = (self.intro_text1_pos[0], self.intro_text1_pos[1]-self.game.screensize[0]/16)
+		self.intro_text2_pos = (self.intro_text2_pos[0], self.intro_text2_pos[1]+self.game.screensize[0]/16)
+		self.intro_text1 = Text(self.game.screen, self.splash, text, self.color['win'], self.intro_text1_pos)
+		self.intro_text1.draw()
+		self.intro_text2 = Text(self.game.screen, self.splash, score, self.color['text'], self.intro_text2_pos)
+		self.intro_text2.draw()
+		self.game.render()
+		self.game.delay(10)
+		self.game.quit()
 	# method that continues the game
 	def go(self):
 		# move paddles to kinect locations
@@ -325,5 +349,5 @@ class Controller(object):
 		self.left_score.change(str(left_score))
 		self.right_score.change(str(right_score))
 		if left_score >= 5 or right_score >= 5:
-			self.game.quit()
+			self.end()
 		self.game.render()
