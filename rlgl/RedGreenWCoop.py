@@ -262,7 +262,7 @@ if __name__ == '__main__':
 
     screen = pygame.display.set_mode(VIDEO_WINSIZE,0,32)
     screen.unlock()
-    pygame.display.set_caption('Red-Light, Green-Light, 1, 2, 3!')
+    pygame.display.set_caption('Red Light, Green Light, 1, 2, 3!')
     skeletons = None
     screen.fill(THECOLORS["black"])
 
