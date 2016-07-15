@@ -39,7 +39,7 @@ legs = False
 arms = False
 draw_skeleton = None
 maple_leaf_rag = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Maple Leaf Rag.wav")
-tick_tock = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Tick Tock.wav")
+tick_tock = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Tick-Tock.wav")
 
 skeleton_input = raw_input("Would you like to have a skeleton displayed?\n(y, n)")
 while(draw_skeleton == None):
@@ -341,8 +341,10 @@ t = datetime.now()
 
 myfont2 = pygame.font.SysFont("monospace", 80, bold = True)
 
-pos = center(myfont2, "SCORE: " + str(int(score)), 0, 0, 640, 480)
-pos2 = center(myfont2, "NET SCORE: " + str(int(net_score)), 0, 0, 640, 480)
+posA = center(myfont2, "SCORE:", 0, 0, 640, 240)
+posB = center(myfont2, str(int(score)), 0, 0, 640, 240)
+pos2A = center(myfont2, "NET SCORE:", 0, 0, 640, 480)
+pos2B = center(myfont2, str(int(net_score)), 0, 240, 640, 240)
 
 pygame.mixer.music.load(maple_leaf_rag)
 pygame.mixer.music.play(0)
@@ -352,7 +354,8 @@ while((datetime.now() - t).seconds <= 5):
     screen.unlock()
     pygame.Surface.fill(screen, (0, 0, 0), rect3)
     try:
-        screen.blit(myfont2.render("SCORE: " + str(int(score)), True, (255, 255, 255)), pos)
+        screen.blit(myfont2.render("SCORE:", True, (255, 255, 255)), posA)
+        screen.blit(myfont2.render(str(int(score)), True, (255, 255, 255)), posBB)
         pygame.display.update()
     except pygame.error:
         screen.unlock()
@@ -361,7 +364,8 @@ while((datetime.now() - t).seconds <= 10):
     screen.unlock()
     pygame.Surface.fill(screen, (0, 0, 0), rect3)
     try:
-        screen.blit(myfont2.render("NET SCORE: " + str(int(net_score)), True, (255, 255, 255)), pos2)
+        screen.blit(myfont2.render("NET SCORE:", True, (255, 255, 255)), pos2A)
+        screen.blit(myfont2.render(str(int(net_score)), True, (255, 255, 255)), pos2B)
         pygame.display.update()
     except pygame.error:
         screen.unlock()
