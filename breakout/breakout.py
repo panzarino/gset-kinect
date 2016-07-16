@@ -69,16 +69,16 @@ class Ball(Circle):
 		self.pos = (newx, newy)
 		self.draw()
 
-block1 = Block(120, 60, 60, 30, THECOLORS["blue"])
-block2 = Block(60, 60, 60, 30, THECOLORS["green"])
-block3 = Block(60, 120, 60, 30, THECOLORS["yellow"])
-block4 = Block(180, 60, 60, 30, THECOLORS["orange"])
-block5 = Block(240, 60, 60, 30, THECOLORS["red"])
-block6 = Block(240, 90, 60, 30, THECOLORS["purple"])
-block7 = Block(60, 90, 60, 30, THECOLORS["pink"])
-block8 = Block(180, 120, 60, 30, THECOLORS["grey"])
-block9 = Block(120, 120, 60, 30, THECOLORS["tan"])
-block10 = Block(240, 120, 60, 30, THECOLORS["white"])
+block2 = Block(360, 60, 120, 60, THECOLORS["green"])
+block7 = Block(360, 120, 120, 60, THECOLORS["pink"])
+block3 = Block(360, 180, 120, 60, THECOLORS["yellow"])
+block1 = Block(480, 60, 120, 60, THECOLORS["blue"])
+block9 = Block(480, 180, 120, 60, THECOLORS["tan"])
+block4 = Block(600, 60, 120, 60, THECOLORS["orange"])
+block8 = Block(600, 180, 120, 60, THECOLORS["grey"])
+block5 = Block(720, 60, 120, 60, THECOLORS["red"])
+block6 = Block(720, 120, 120, 60, THECOLORS["purple"])
+block10 = Block(720, 180, 120, 60, THECOLORS["white"])
 
 clock = pygame.time.Clock() 
 
@@ -134,10 +134,10 @@ class Game(object):
 
 			if (self.ball.pos[1] >= 590):
 				print("test1")
-			if(self.ball.pos[0] >= self.paddle.center - 15):
-				print("test2")
-			if(self.ball.pos[0] <= self.paddle.center+15):
-				print("test3")
+				if(self.ball.pos[0] >= self.paddle.center - 15):
+					print("test2")
+				if(self.ball.pos[0] <= self.paddle.center+15):
+					print("test3")
 			if (self.ball.pos[1] >= 590 and self.ball.pos[0] >= self.paddle.center - 15 and self.ball.pos[0] <= self.paddle.center+15):
 				self.angle = math.atan2(self.ball.balldx, self.ball.balldy)
 				print("test")
