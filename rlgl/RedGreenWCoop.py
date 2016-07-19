@@ -284,6 +284,11 @@ def end():
             screen.unlock()
 
 def main():
+    global screen_lock
+    global screen
+
+
+
     full_screen = False
 
     pygame.mixer.music.load(maple_leaf_rag)
@@ -295,7 +300,7 @@ def main():
 
     screen = pygame.display.set_mode(VIDEO_WINSIZE, pygame.FULLSCREEN, 32)
     screen.unlock()
-    pygame.display.set_caption('Red Light, Green Light, 1, 2, 3!')
+    pygame.display.set_caption('Red Light, Green Light')
     skeletons = None
     screen.fill(THECOLORS["black"])
 
