@@ -155,24 +155,20 @@ class Game(object):
 
 			for m in self.pieces_group:
 				#bottom collision
-				if (m.rectlist[0] <= self.ball.pos[0] <= m.rectlist[0] + m.rectlist[2] and self.ball.pos[1] - self.ball.radius == m.rectlist[1] + m.rectlist[3]):
+				if (m.rectlist[0] <= self.ball.pos[0] + self.ball.radius <= m.rectlist[0] + m.rectlist[2] and self.ball.pos[1] + self.ball.radius == m.rectlist[1] + m.rectlist[3]):
 					self.ball.balldy *= -1
-					del (m)
 
 				#top collision
-				if (m.rectlist[0] <= self.ball.pos[0] <= m.rectlist[0] + m.rectlist[2] and self.ball.pos[1] + self.ball.radius == m.rectlist[1]):
+				if (m.rectlist[0] <= self.ball.pos[0] + self.ball.radius <= m.rectlist[0] + m.rectlist[2] and self.ball.pos[1] - self.ball.radius == m.rectlist[1]):
 					self.ball.balldy *= -1
-					del (m)
 
 				#right collision
-				if (m.rectlist[1] <= self.ball.pos[1] <= m.rectlist[1] + m.rectlist[3] and self.ball.pos[0] - self.ball.radius == m.rectlist[0]):
+				if (m.rectlist[1] <= self.ball.pos[1] + self.ball.radius <= m.rectlist[1] + m.rectlist[3] and self.ball.pos[0] - self.ball.radius == m.rectlist[0]):
 					self.ball.balldm *= -1
-					del (m)
 
 				#right collision
-				if (m.rectlist[1] <= self.ball.pos[1] <= m.rectlist[1] + m.rectlist[3] and self.ball.pos[0] + self.ball.radius == m.rectlist[0] + m.rectlist[2]):
+				if (m.rectlist[1] <= self.ball.pos[1] + self.ball.radius <= m.rectlist[1] + m.rectlist[3] and self.ball.pos[0] + self.ball.radius == m.rectlist[0] + m.rectlist[2]):
 					self.ball.balldm *= -1
-					del (m)
 
 			self.totalx = self.ball.pos[0] + self.ball.balldx
 			self.totaly = self.ball.pos[1] + self.ball.balldy
