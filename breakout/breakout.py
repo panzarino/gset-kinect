@@ -31,6 +31,23 @@ class Paddle(object):
 		diff = self.newx - current
 		self.diff = diff/4
 
+class Block(object):
+	def __init__(self, screen, color, x, y, length, width, outline=0):
+		self.screen = screen
+		self.color = color
+		self.rectlist = [x, y, length, width]
+		self.outline = outline;
+		self.newx = x
+		self.diff = 0
+
+	def draw(self):
+		self.rect = rect(self.screen, self.color, self.rectlist, self.outline)
+
+	def change(self):
+		if (abs(self.newx-self.rectlist[0])>4):
+			self.rectlist = [self.rectlist[0] + self.diff, self.rectlist[1], self.rectlist[2], self.rectlist[3]]
+		self.draw()
+
 class NotABall(sprite.Sprite):
     def hit_by_ball(self, cur_ball):
         pass
