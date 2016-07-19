@@ -32,16 +32,18 @@ class Paddle(object):
 		self.diff = diff/4
 
 class Block(object):
-	def __init__(self, screen, color, x, y, length, width, outline=0):
+	def __init__(self, screen, color, x, y, length, width, exists, outline=0):
 		self.screen = screen
 		self.color = color
 		self.rectlist = [x, y, length, width]
-		self.outline = outline;
+		self.outline = outline
 		self.newx = x
 		self.diff = 0
+		self.exists = exists
 
 	def draw(self):
-		self.rect = rect(self.screen, self.color, self.rectlist, self.outline)
+		if (self.exists):
+			self.rect = rect(self.screen, self.color, self.rectlist, self.outline)
 
 	def change(self):
 		if (abs(self.newx-self.rectlist[0])>4):
@@ -50,13 +52,13 @@ class Block(object):
 
 class Circle(object):
 	def __init__(self, screen, color, pos, radius, outline=0):
-		self.screen = screen;
-		self.color = color;
-		self.pos = pos;
-		self.radius = radius;
-		self.outline = outline;
-		self.balldx = 2;
-		self.balldy = -1;
+		self.screen = screen
+		self.color = color
+		self.pos = pos
+		self.radius = radius
+		self.outline = outline
+		self.balldx = 2
+		self.balldy = -1
 		self.speed = math.sqrt(self.balldx**2 + self.balldy**2)
 
 	def draw(self):
@@ -90,16 +92,16 @@ class Game(object):
 		self.background.fill(THECOLORS["black"])
 		self.background.convert()
 
-		block2 = Block(self.screen, THECOLORS["green"], 360, 60, 120, 60)
-		block7 = Block(self.screen, THECOLORS["pink"], 360, 120, 120, 60)
-		block3 = Block(self.screen, THECOLORS["yellow"], 360, 180, 120, 60)
-		block1 = Block(self.screen, THECOLORS["blue"], 480, 60, 120, 60)
-		block9 = Block(self.screen, THECOLORS["tan"], 480, 180, 120, 60)
-		block4 = Block(self.screen, THECOLORS["orange"], 600, 60, 120, 60)
-		block8 = Block(self.screen, THECOLORS["grey"], 600, 180, 120, 60)
-		block5 = Block(self.screen, THECOLORS["red"], 720, 60, 120, 60)
-		block6 = Block(self.screen, THECOLORS["purple"], 720, 120, 120, 60)
-		block10 = Block(self.screen, THECOLORS["white"], 720, 180, 120, 60)
+		block2 = Block(self.screen, THECOLORS["green"], 360, 60, 120, 60, True)
+		block7 = Block(self.screen, THECOLORS["pink"], 360, 120, 120, 60, True)
+		block3 = Block(self.screen, THECOLORS["yellow"], 360, 180, 120, 60, True)
+		block1 = Block(self.screen, THECOLORS["blue"], 480, 60, 120, 60, True)
+		block9 = Block(self.screen, THECOLORS["tan"], 480, 180, 120, 60, True)
+		block4 = Block(self.screen, THECOLORS["orange"], 600, 60, 120, 60, True)
+		block8 = Block(self.screen, THECOLORS["grey"], 600, 180, 120, 60, True)
+		block5 = Block(self.screen, THECOLORS["red"], 720, 60, 120, 60, True)
+		block6 = Block(self.screen, THECOLORS["purple"], 720, 120, 120, 60, True)
+		block10 = Block(self.screen, THECOLORS["white"], 720, 180, 120, 60, True)
 
 		self.pieces_group = (block1, block2, block3, block4, block5, block6, block7, block8, block9, block10)
 
@@ -108,6 +110,8 @@ class Game(object):
 
 		self.ball = Ball(self.screen, THECOLORS["white"], (650, 560), 12)
 		self.paddle = Paddle(self.screen, THECOLORS["red"], 550, 580, 200, 10)
+
+		self.isCollided = False
 
 	def doUpdate(self):
 		pygame.display.set_caption('Python Kinect Game %d fps' % clock.get_fps())
@@ -123,14 +127,18 @@ class Game(object):
 		while (self.numBalls > 0):
 
 			if (self.ball.pos[0] - self.ball.radius <= 0 or self.ball.pos[0] + self.ball.radius >= 1200):
-				self.ball.balldx *= -1
-				if (self.ball.pos[0] - self.ball.radius <= 0):
-					self.ball.setPos(self.ball.pos[0] + 1, self.ball.pos[1])
-				else:
-					self.ball.setPos(self.ball.pos[0] - 1, self.ball.pos[1])
+				if (self.isCollided == False):
+					self.ball.balldx *= -1
+					self.isCollided = True
+			else:
+				self.isCollided = False
 
 			if (self.ball.pos[1] + self.ball.radius <= 20):
-				self.ball.balldy *= -1
+				if (self.isCollided == False):
+					self.ball.balldy *= -1
+					self.isCollided = True
+			else:
+				self.isCollided = False
 
 			if (self.ball.pos[1] >= 610):
 				self.numBalls -= 1
@@ -152,24 +160,21 @@ class Game(object):
 					self.angle = 90 + 14/3 * (self.ball.pos[0] - self.paddle.center)
 					self.ball.balldy = -math.sin(self.angle) * self.ball.speed
 					self.ball.balldx = math.cos(self.angle) * self.ball.speed
-
-			for m in self.pieces_group:
-				#bottom collision
-				if (m.rectlist[0] <= self.ball.pos[0] + self.ball.radius <= m.rectlist[0] + m.rectlist[2] and self.ball.pos[1] + self.ball.radius == m.rectlist[1] + m.rectlist[3]):
-					self.ball.balldy *= -1
-
-				#top collision
-				if (m.rectlist[0] <= self.ball.pos[0] + self.ball.radius <= m.rectlist[0] + m.rectlist[2] and self.ball.pos[1] - self.ball.radius == m.rectlist[1]):
-					self.ball.balldy *= -1
-
-				#right collision
-				if (m.rectlist[1] <= self.ball.pos[1] + self.ball.radius <= m.rectlist[1] + m.rectlist[3] and self.ball.pos[0] - self.ball.radius == m.rectlist[0]):
-					self.ball.balldm *= -1
-
-				#right collision
-				if (m.rectlist[1] <= self.ball.pos[1] + self.ball.radius <= m.rectlist[1] + m.rectlist[3] and self.ball.pos[0] + self.ball.radius == m.rectlist[0] + m.rectlist[2]):
-					self.ball.balldm *= -1
-
+			if (self.isCollided == False):
+				for m in self.pieces_group:
+					if (self.ball.pos[0] + self.ball.radius >= m.rectlist[0] and self.ball.pos[0] - self.ball.radius <= m.rectlist[0] + m.rectlist[2]):
+						if ((self.ball.pos[0]  <= m.rectlist[0] - 5 and self.ball.balldx > 0 or self.ball.pos[0] >= m.rectlist[0] + m.rectlist[2] + 5  and self.ball.balldx < 0) and self.ball.pos[1] >= m.rectlist[1] + m.rectlist[3] and self.ball.pos[1] <= m.rectlist[1] and m.exists):		# block 1 left/right side
+							self.ball.balldx = -self.ball.balldx
+							m.exists = False
+							self.isCollided = True
+					
+						elif (m.rectlist[0] <= self.ball.pos[0] <= m.rectlist[0] + m.rectlist[2] and (50 < self.ball.pos[1] <= m.rectlist[1] + 5 or m.rectlist[1] + m.rectlist[3] - 5 <= self.ball.pos[1] < m.rectlist[1] + m.rectlist[3]) and m.exists):	# block 1 top/bottom side 
+							self.ball.balldy = -self.ball.balldy
+							m.exists = False
+							self.isCollided = True
+						else:
+							self.isCollided = False
+					
 			self.totalx = self.ball.pos[0] + self.ball.balldx
 			self.totaly = self.ball.pos[1] + self.ball.balldy
 			self.ball.setPos(int(self.totalx), int(self.totaly))
