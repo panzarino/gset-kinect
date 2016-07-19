@@ -48,19 +48,6 @@ class Block(object):
 			self.rectlist = [self.rectlist[0] + self.diff, self.rectlist[1], self.rectlist[2], self.rectlist[3]]
 		self.draw()
 
-class NotABall(sprite.Sprite):
-    def hit_by_ball(self, cur_ball):
-        pass
-
-class Block(NotABall):
-	def __init__(self, x, y, w, h, color):
-		super(Block, self).__init__()
-		self.size = Rect(0, 0, w, h)
-		self.rect = Rect(x, y, w, h)
-		self.color = color
-		self.image = pygame.SurfaceType((w, h))
-		pygame.draw.rect(self.image, color, self.size)
-
 class Circle(object):
 	def __init__(self, screen, color, pos, radius, outline=0):
 		self.screen = screen;
@@ -86,17 +73,6 @@ class Ball(Circle):
 		self.pos = (newx, newy)
 		self.draw()
 
-block2 = Block(360, 60, 120, 60, THECOLORS["green"])
-block7 = Block(360, 120, 120, 60, THECOLORS["pink"])
-block3 = Block(360, 180, 120, 60, THECOLORS["yellow"])
-block1 = Block(480, 60, 120, 60, THECOLORS["blue"])
-block9 = Block(480, 180, 120, 60, THECOLORS["tan"])
-block4 = Block(600, 60, 120, 60, THECOLORS["orange"])
-block8 = Block(600, 180, 120, 60, THECOLORS["grey"])
-block5 = Block(720, 60, 120, 60, THECOLORS["red"])
-block6 = Block(720, 120, 120, 60, THECOLORS["purple"])
-block10 = Block(720, 180, 120, 60, THECOLORS["white"])
-
 clock = pygame.time.Clock() 
 
 class Game(object):
@@ -114,24 +90,32 @@ class Game(object):
 		self.background.fill(THECOLORS["black"])
 		self.background.convert()
 
-		self.pieces_group = sprite.Group(block1, block2, block3, block4, block5, block6, block7, block8, block9, block10)
+		block2 = Block(self.screen, THECOLORS["green"], 360, 60, 120, 60)
+		block7 = Block(self.screen, THECOLORS["pink"], 360, 120, 120, 60)
+		block3 = Block(self.screen, THECOLORS["yellow"], 360, 180, 120, 60)
+		block1 = Block(self.screen, THECOLORS["blue"], 480, 60, 120, 60)
+		block9 = Block(self.screen, THECOLORS["tan"], 480, 180, 120, 60)
+		block4 = Block(self.screen, THECOLORS["orange"], 600, 60, 120, 60)
+		block8 = Block(self.screen, THECOLORS["grey"], 600, 180, 120, 60)
+		block5 = Block(self.screen, THECOLORS["red"], 720, 60, 120, 60)
+		block6 = Block(self.screen, THECOLORS["purple"], 720, 120, 120, 60)
+		block10 = Block(self.screen, THECOLORS["white"], 720, 180, 120, 60)
+
+		self.pieces_group = (block1, block2, block3, block4, block5, block6, block7, block8, block9, block10)
 
 		self.image1 = pygame.SurfaceType((15, 40))
 		pygame.draw.rect(self.image1, THECOLORS["red"], pygame.Rect(0, 0, 90, 6))
 
 		self.ball = Ball(self.screen, THECOLORS["white"], (650, 560), 12)
-		self.paddle = Paddle(self.screen, THECOLORS["red"], 600, 580, 100, 10)
-
-	def draw(self):
-		self.screen.fill(THECOLORS["black"])
-		self.pieces_group.clear(self.screen, self.background)
-		self.pieces_group.draw(self.screen)
+		self.paddle = Paddle(self.screen, THECOLORS["red"], 550, 580, 200, 10)
 
 	def doUpdate(self):
 		pygame.display.set_caption('Python Kinect Game %d fps' % clock.get_fps())
-		self.draw()
+		self.screen.fill(THECOLORS["black"])
 		self.ball.change()
 		self.paddle.change()
+		for m in self.pieces_group:
+			m.change()
 
 		pygame.display.update()
 
@@ -140,24 +124,21 @@ class Game(object):
 
 			if (self.ball.pos[0] - self.ball.radius <= 0 or self.ball.pos[0] + self.ball.radius >= 1200):
 				self.ball.balldx *= -1
+				if (self.ball.pos[0] - self.ball.radius <= 0):
+					self.ball.setPos(self.ball.pos[0] + 1, self.ball.pos[1])
+				else:
+					self.ball.setPos(self.ball.pos[0] - 1, self.ball.pos[1])
 
 			if (self.ball.pos[1] + self.ball.radius <= 20):
 				self.ball.balldy *= -1
 
 			if (self.ball.pos[1] >= 610):
 				self.numBalls -= 1
-				self.ball.setPos(self.paddle.center, 560)
+				self.ball.setPos(self.paddle.center, 540)
 				self.ball.balldy = random.choice([-1, -2])
 
-			if (self.ball.pos[1] >= 590):
-				print("test1")
-				if(self.ball.pos[0] >= self.paddle.center - 15):
-					print("test2")
-				if(self.ball.pos[0] <= self.paddle.center+15):
-					print("test3")
-			if (self.ball.pos[1] >= 590 and self.ball.pos[0] >= self.paddle.center - 15 and self.ball.pos[0] <= self.paddle.center+15):
+			if (self.ball.pos[1] + self.ball.radius >= 590 and self.ball.pos[0] >= self.paddle.center - 100 and self.ball.pos[0] <= self.paddle.center + 100):
 				self.angle = math.atan2(self.ball.balldx, self.ball.balldy)
-				print("test")
 				if (self.ball.pos[0] == self.paddle.center):
 					self.ball.balldx = 0
 					self.ball.balldy *= -1
@@ -172,11 +153,30 @@ class Game(object):
 					self.ball.balldy = -math.sin(self.angle) * self.ball.speed
 					self.ball.balldx = math.cos(self.angle) * self.ball.speed
 
+			for m in self.pieces_group:
+				#bottom collision
+				if (m.rectlist[0] <= self.ball.pos[0] <= m.rectlist[0] + m.rectlist[2] and self.ball.pos[1] - self.ball.radius == m.rectlist[1] + m.rectlist[3]):
+					self.ball.balldy *= -1
+					del (m)
+
+				#top collision
+				if (m.rectlist[0] <= self.ball.pos[0] <= m.rectlist[0] + m.rectlist[2] and self.ball.pos[1] + self.ball.radius == m.rectlist[1]):
+					self.ball.balldy *= -1
+					del (m)
+
+				#right collision
+				if (m.rectlist[1] <= self.ball.pos[1] <= m.rectlist[1] + m.rectlist[3] and self.ball.pos[0] - self.ball.radius == m.rectlist[0]):
+					self.ball.balldm *= -1
+					del (m)
+
+				#right collision
+				if (m.rectlist[1] <= self.ball.pos[1] <= m.rectlist[1] + m.rectlist[3] and self.ball.pos[0] + self.ball.radius == m.rectlist[0] + m.rectlist[2]):
+					self.ball.balldm *= -1
+					del (m)
+
 			self.totalx = self.ball.pos[0] + self.ball.balldx
 			self.totaly = self.ball.pos[1] + self.ball.balldy
 			self.ball.setPos(int(self.totalx), int(self.totaly))
-			self.ball.balldx = self.ball.balldx
-			self.ball.balldy = self.ball.balldy
 
 			self.doUpdate()
 
