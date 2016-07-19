@@ -250,7 +250,7 @@ def score_update(e, t):
         return score_change
 
 
-if __name__ == '__main__':
+def main():
     full_screen = False
 
     pygame.mixer.music.load(maple_leaf_rag)
@@ -336,39 +336,40 @@ if __name__ == '__main__':
                 kinect.camera.elevation_angle = kinect.camera.elevation_angle - 2
             elif e.key == K_x:
                 kinect.camera.elevation_angle = 2
+def end():
+    t = datetime.now()
 
-t = datetime.now()
+    myfont2 = pygame.font.SysFont("monospace", 80, bold = True)
 
-myfont2 = pygame.font.SysFont("monospace", 80, bold = True)
+    posA = center(myfont2, "SCORE:", 0, 0, 640, 240)
+    posB = center(myfont2, str(int(score)), 0, 0, 640, 240)
+    pos2A = center(myfont2, "NET SCORE:", 0, 0, 640, 480)
+    pos2B = center(myfont2, str(int(net_score)), 0, 240, 640, 240)
 
-posA = center(myfont2, "SCORE:", 0, 0, 640, 240)
-posB = center(myfont2, str(int(score)), 0, 0, 640, 240)
-pos2A = center(myfont2, "NET SCORE:", 0, 0, 640, 480)
-pos2B = center(myfont2, str(int(net_score)), 0, 240, 640, 240)
+    pygame.mixer.music.load(maple_leaf_rag)
+    pygame.mixer.music.play(0)
 
-pygame.mixer.music.load(maple_leaf_rag)
-pygame.mixer.music.play(0)
-
-while((datetime.now() - t).seconds <= 5):
-    rect3 = (0, 0, 640, 480)
-    screen.unlock()
-    pygame.Surface.fill(screen, (0, 0, 0), rect3)
-    try:
-        screen.blit(myfont2.render("SCORE:", True, (255, 255, 255)), posA)
-        screen.blit(myfont2.render(str(int(score)), True, (255, 255, 255)), posBB)
-        pygame.display.update()
-    except pygame.error:
+    while((datetime.now() - t).seconds <= 5):
+        rect3 = (0, 0, 640, 480)
         screen.unlock()
-while((datetime.now() - t).seconds <= 10):
-    rect3 = (0, 0, 640, 480)
-    screen.unlock()
-    pygame.Surface.fill(screen, (0, 0, 0), rect3)
-    try:
-        screen.blit(myfont2.render("NET SCORE:", True, (255, 255, 255)), pos2A)
-        screen.blit(myfont2.render(str(int(net_score)), True, (255, 255, 255)), pos2B)
-        pygame.display.update()
-    except pygame.error:
+        pygame.Surface.fill(screen, (0, 0, 0), rect3)
+        try:
+            screen.blit(myfont2.render("SCORE:", True, (255, 255, 255)), posA)
+            screen.blit(myfont2.render(str(int(score)), True, (255, 255, 255)), posBB)
+            pygame.display.update()
+        except pygame.error:
+            screen.unlock()
+    while((datetime.now() - t).seconds <= 10):
+        rect3 = (0, 0, 640, 480)
         screen.unlock()
-sys.exit()
+        pygame.Surface.fill(screen, (0, 0, 0), rect3)
+        try:
+            screen.blit(myfont2.render("NET SCORE:", True, (255, 255, 255)), pos2A)
+            screen.blit(myfont2.render(str(int(net_score)), True, (255, 255, 255)), pos2B)
+            pygame.display.update()
+        except pygame.error:
+            screen.unlock()
 
-#Testing GitHub
+if __name__ == "__main__":
+    main()
+    end()
