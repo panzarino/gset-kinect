@@ -293,7 +293,7 @@ def main():
 
     screen_lock = thread.allocate()
 
-    screen = pygame.display.set_mode(VIDEO_WINSIZE,0,32)
+    screen = pygame.display.set_mode(VIDEO_WINSIZE, pygame.FULLSCREEN, 32)
     screen.unlock()
     pygame.display.set_caption('Red Light, Green Light, 1, 2, 3!')
     skeletons = None
