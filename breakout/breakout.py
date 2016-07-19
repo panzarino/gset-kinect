@@ -7,6 +7,21 @@ import math
 import random
 import time
 from pykinect import nui
+import ctypes
+import thread
+
+KINECTEVENT = pygame.USEREVENT
+
+video_display = False
+
+kinect = nui.Runtime()
+kinect.skeleton_engine.enabled = True
+
+screen_lock = thread.allocate()
+
+def get_screen_size():
+	user32 = ctypes.windll.user32
+	return user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
 
 class Paddle(object):
 	def __init__(self, screen, color, x, y, length, width, outline=0):
@@ -82,19 +97,12 @@ class Game(object):
 	def __init__(self):
 		self.screensize = get_screen_size()
 		self.screen = pygame.display.set_mode(self.screensize, pygame.FULLSCREEN)
-		pygame.mouse.set_visible(self.show_cursor)
+		pygame.mouse.set_visible(False)
 		
 		self.width = 1200
 		self.height = 600
 
 		self.numBalls = 3
-
-		kinect = nui.Runtime()
-		kinect.camera.elevation_angle = -2
-		kinect.skeleton_engine.enabled = True
-		kinect.skeleton_frame_ready += post_frame
-		kinect.video_frame_ready += video_frame_ready    
-		kinect.video_stream.open(nui.ImageStreamType.Video, 2, nui.ImageResolution.Resolution640x480, nui.ImageType.Color)
 
 		self.screen = pygame.display.set_mode((self.width, self.height), 0, 32)
 		self.screen.convert()
@@ -125,6 +133,10 @@ class Game(object):
 
 		self.isCollided = False
 
+	def quit(self):
+		pygame.quit()
+		sys.exit()
+
 	def go(self):
 		# move paddles to kinect locations
 		events = pygame.event.get()
@@ -135,7 +147,7 @@ class Game(object):
 					if (not head.y==0):
 						xval = interp(head.x, [-.025,.30], [0,1])
 						xpos = (1-xval) * self.game.screensize[1]
-						self.right.move(ypos)
+						self.paddle.move(xpos)
 			elif e.type == KEYDOWN:
 				if e.key == K_ESCAPE:
 					self.game.quit()
@@ -145,6 +157,7 @@ class Game(object):
 		self.screen.fill(THECOLORS["black"])
 		self.ball.change()
 		self.paddle.change()
+		self.doUpdate()
 		for m in self.pieces_group:
 			m.change()
 
@@ -211,7 +224,6 @@ class Game(object):
 						self.isCollided = False
 					
 					if (check):
-						print(m)
 						m.exists = False
 						check = False
 
