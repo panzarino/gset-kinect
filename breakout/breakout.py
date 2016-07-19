@@ -145,36 +145,49 @@ class Game(object):
 				self.ball.setPos(self.paddle.center, 540)
 				self.ball.balldy = random.choice([-1, -2])
 
-			if (self.ball.pos[1] + self.ball.radius >= 590 and self.ball.pos[0] >= self.paddle.center - 100 and self.ball.pos[0] <= self.paddle.center + 100):
+			if (self.ball.pos[1] + self.ball.radius >= 580 and self.ball.pos[0] >= self.paddle.center - 100 and self.ball.pos[0] <= self.paddle.center + 100):
 				self.angle = math.atan2(self.ball.balldx, self.ball.balldy)
-				if (self.ball.pos[0] == self.paddle.center):
-					self.ball.balldx = 0
-					self.ball.balldy *= -1
+				if (self.isCollided == False):
+					self.isCollided = True
+					if (self.ball.pos[0] == self.paddle.center):
+						self.ball.balldx = 0.1
+						self.ball.balldy *= -1
 
-				if (self.ball.pos[0] < self.paddle.center):
-					self.angle = 90 - 14/3 * (self.paddle.center - self.ball.pos[0])
-					self.ball.balldy = -math.sin(self.angle) * self.ball.speed
-					self.ball.balldx = math.cos(self.angle) * self.ball.speed
+					if (self.ball.pos[0] < self.paddle.center):
+						self.angle = 90 - 14/3 * (self.paddle.center - self.ball.pos[0])
+						self.ball.balldy = -math.sin(self.angle) * self.ball.speed
+						self.ball.balldx = math.cos(self.angle) * self.ball.speed
 
-				if (self.ball.pos[0] > self.paddle.center):
-					self.angle = 90 + 14/3 * (self.ball.pos[0] - self.paddle.center)
-					self.ball.balldy = -math.sin(self.angle) * self.ball.speed
-					self.ball.balldx = math.cos(self.angle) * self.ball.speed
+					if (self.ball.pos[0] > self.paddle.center):
+						self.angle = 90 + 14/3 * (self.ball.pos[0] - self.paddle.center)
+						self.ball.balldy = -math.sin(self.angle) * self.ball.speed
+						self.ball.balldx = math.cos(self.angle) * self.ball.speed
+			else:
+				self.isCollided = False
+
+			check = False
+
 			if (self.isCollided == False):
 				for m in self.pieces_group:
 					if (self.ball.pos[0] + self.ball.radius >= m.rectlist[0] and self.ball.pos[0] - self.ball.radius <= m.rectlist[0] + m.rectlist[2]):
-						if ((self.ball.pos[0]  <= m.rectlist[0] - 5 and self.ball.balldx > 0 or self.ball.pos[0] >= m.rectlist[0] + m.rectlist[2] + 5  and self.ball.balldx < 0) and self.ball.pos[1] >= m.rectlist[1] + m.rectlist[3] and self.ball.pos[1] <= m.rectlist[1] and m.exists):		# block 1 left/right side
+						if (m.rectlist[1] <= self.ball.pos[1] <= m.rectlist[1] + m.rectlist[3] and (m.rectlist[0] < self.ball.pos[0] <= m.rectlist[0] + 5 or m.rectlist[0] + m.rectlist[2] - 5 <= self.ball.pos[0] < m.rectlist[0] + m.rectlist[2]) and m.exists):		# block 1 left/right side
 							self.ball.balldx = -self.ball.balldx
-							m.exists = False
+							check = True
 							self.isCollided = True
-					
-						elif (m.rectlist[0] <= self.ball.pos[0] <= m.rectlist[0] + m.rectlist[2] and (50 < self.ball.pos[1] <= m.rectlist[1] + 5 or m.rectlist[1] + m.rectlist[3] - 5 <= self.ball.pos[1] < m.rectlist[1] + m.rectlist[3]) and m.exists):	# block 1 top/bottom side 
+
+						if (m.rectlist[0] <= self.ball.pos[0] <= m.rectlist[0] + m.rectlist[2] and (m.rectlist[1] < self.ball.pos[1] <= m.rectlist[1] + 5 or m.rectlist[1] + m.rectlist[3] - 5 <= self.ball.pos[1] < m.rectlist[1] + m.rectlist[3]) and m.exists):	# block 1 top/bottom side 
 							self.ball.balldy = -self.ball.balldy
-							m.exists = False
 							self.isCollided = True
-						else:
-							self.isCollided = False
+							check = True
+
+					else:
+						self.isCollided = False
 					
+					if (check):
+						print(m)
+						m.exists = False
+						check = False
+
 			self.totalx = self.ball.pos[0] + self.ball.balldx
 			self.totaly = self.ball.pos[1] + self.ball.balldy
 			self.ball.setPos(int(self.totalx), int(self.totaly))
