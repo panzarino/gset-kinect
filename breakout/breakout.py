@@ -6,6 +6,7 @@ from pygame.draw import *
 import math
 import random
 import time
+from pykinect import nui
 
 class Paddle(object):
 	def __init__(self, screen, color, x, y, length, width, outline=0):
@@ -79,10 +80,21 @@ clock = pygame.time.Clock()
 
 class Game(object):
 	def __init__(self):
+		self.screensize = get_screen_size()
+		self.screen = pygame.display.set_mode(self.screensize, pygame.FULLSCREEN)
+		pygame.mouse.set_visible(self.show_cursor)
+		
 		self.width = 1200
 		self.height = 600
 
 		self.numBalls = 3
+
+		kinect = nui.Runtime()
+		kinect.camera.elevation_angle = -2
+		kinect.skeleton_engine.enabled = True
+		kinect.skeleton_frame_ready += post_frame
+		kinect.video_frame_ready += video_frame_ready    
+		kinect.video_stream.open(nui.ImageStreamType.Video, 2, nui.ImageResolution.Resolution640x480, nui.ImageType.Color)
 
 		self.screen = pygame.display.set_mode((self.width, self.height), 0, 32)
 		self.screen.convert()
@@ -112,6 +124,21 @@ class Game(object):
 		self.paddle = Paddle(self.screen, THECOLORS["red"], 550, 580, 200, 10)
 
 		self.isCollided = False
+
+	def go(self):
+		# move paddles to kinect locations
+		events = pygame.event.get()
+		for e in events:
+			if e.type == KINECTEVENT:
+				for skeleton in e.skeletons:
+					head = skeleton.SkeletonPositions[JointId.Head]
+					if (not head.y==0):
+						xval = interp(head.x, [-.025,.30], [0,1])
+						xpos = (1-xval) * self.game.screensize[1]
+						self.right.move(ypos)
+			elif e.type == KEYDOWN:
+				if e.key == K_ESCAPE:
+					self.game.quit()
 
 	def doUpdate(self):
 		pygame.display.set_caption('Python Kinect Game %d fps' % clock.get_fps())
