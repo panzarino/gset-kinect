@@ -155,9 +155,9 @@ class Game(object):
 	def doUpdate(self):
 		pygame.display.set_caption('Python Kinect Game %d fps' % clock.get_fps())
 		self.screen.fill(THECOLORS["black"])
+		self.go()
 		self.ball.change()
 		self.paddle.change()
-		self.doUpdate()
 		for m in self.pieces_group:
 			m.change()
 
