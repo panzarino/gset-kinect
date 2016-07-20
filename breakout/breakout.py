@@ -94,6 +94,7 @@ class Paddle(object):
 	def change(self):
 		if (abs(self.newx-self.rectlist[0])>4):
 			self.rectlist = [self.rectlist[0] + self.diff, self.rectlist[1], self.rectlist[2], self.rectlist[3]]
+			self.center = self.rectlist[0] + self.rectlist[2] / 2
 		self.draw()
 
 	def move(self, newx):
@@ -150,7 +151,7 @@ clock = pygame.time.Clock()
 
 class Game(object):
 	def __init__(self):
-		kinect.camera.elevation_angle = -2
+		kinect.camera.elevation_angle = 4
 		kinect.skeleton_engine.enabled = True
 		kinect.skeleton_frame_ready += post_frame
 		kinect.video_frame_ready += video_frame_ready    
@@ -208,7 +209,7 @@ class Game(object):
 					head = skeleton.SkeletonPositions[JointId.Head]
 					if (not head.x==0):
 						xval = interp(head.x, [-1, 1], [0,1])
-						xpos = (xval) * self.screensize[1]
+						xpos = (xval) * self.width
 						self.paddle.move(xpos)
 			elif e.type == KEYDOWN:
 				if e.key == K_ESCAPE:
@@ -227,16 +228,20 @@ class Game(object):
 	def play(self):
 		while (self.numBalls > 0):
 
-			if (self.ball.pos[0] - self.ball.radius <= 0 or self.ball.pos[0] + self.ball.radius >= 1200):
+			if (self.ball.pos[0] - self.ball.radius <= 0):
 				if (self.isCollided == False):
-					self.ball.balldx *= -1
+					self.ball.balldx = abs(self.ball.balldx)
+					self.isCollided = True
+			elif (self.ball.pos[0] + self.ball.radius >= self.width):
+				if (self.isCollided == False):
+					self.ball.balldx = -abs(self.ball.balldx)
 					self.isCollided = True
 			else:
 				self.isCollided = False
 
-			if (self.ball.pos[1] + self.ball.radius <= 20):
+			if (self.ball.pos[1] - self.ball.radius <= 0):
 				if (self.isCollided == False):
-					self.ball.balldy *= -1
+					self.ball.balldy = abs(self.ball.balldy)
 					self.isCollided = True
 			else:
 				self.isCollided = False
@@ -247,22 +252,22 @@ class Game(object):
 				self.ball.balldy = random.choice([-1, -2])
 
 			if (self.ball.pos[1] + self.ball.radius >= 580 and self.ball.pos[0] >= self.paddle.rectlist[0] and self.ball.pos[0] <= self.paddle.rectlist[0] + self.paddle.rectlist[2]):
-				self.angle = math.atan2(self.ball.balldx, self.ball.balldy)
 				if (self.isCollided == False):
 					self.isCollided = True
 					if (self.ball.pos[0] == self.paddle.center):
-						self.ball.balldx = 0.1
-						self.ball.balldy *= -1
+						self.angle = 90 + 5 * (self.paddle.center - self.ball.pos[0])
+						self.ball.balldy = -abs(math.sin(math.radians(self.angle)) * self.ball.speed)
+						self.ball.balldx = -math.cos(math.radians(self.angle)) * self.ball.speed
 
 					elif (self.ball.pos[0] < self.paddle.center):
-						self.angle = 90 - 14/3 * (self.paddle.center - self.ball.pos[0])
-						self.ball.balldy = -1 * math.sin(self.angle) * self.ball.speed
-						self.ball.balldx = math.cos(self.angle) * self.ball.speed
+						self.angle = 90 + 5 * (self.paddle.center - self.ball.pos[0])
+						self.ball.balldy = -abs(math.sin(math.radians(self.angle)) * self.ball.speed)
+						self.ball.balldx = -math.cos(math.radians(self.angle)) * self.ball.speed
 
 					elif (self.ball.pos[0] > self.paddle.center):
-						self.angle = 90 + 14/3 * (self.ball.pos[0] - self.paddle.center)
-						self.ball.balldy = -1 * math.sin(self.angle) * self.ball.speed
-						self.ball.balldx = math.cos(self.angle) * self.ball.speed
+						self.angle = 90 - 5 * (self.ball.pos[0] - self.paddle.center)
+						self.ball.balldy = -abs(math.sin(math.radians(self.angle)) * self.ball.speed)
+						self.ball.balldx = -math.cos(math.radians(self.angle)) * self.ball.speed
 			else:
 				self.isCollided = False
 
