@@ -10,6 +10,8 @@ from pykinect import nui
 from pykinect.nui import JointId, SkeletonTrackingState
 import ctypes
 import thread
+from numpy import interp
+
 
 KINECTEVENT = pygame.USEREVENT
 
@@ -199,21 +201,18 @@ class Game(object):
 
 	def go(self):
 		# move paddles to kinect locations
-		print("test1")
 		events = pygame.event.get()
 		for e in events:
 			if e.type == KINECTEVENT:
-				print("test2")
 				for skeleton in e.skeletons:
 					head = skeleton.SkeletonPositions[JointId.Head]
 					if (not head.x==0):
-						print("test3")
-						xval = interp(head.x, [-.025,.30], [0,1])
-						xpos = (1-xval) * self.game.screensize[1]
+						xval = interp(head.x, [-1, 1], [0,1])
+						xpos = (xval) * self.screensize[1]
 						self.paddle.move(xpos)
 			elif e.type == KEYDOWN:
 				if e.key == K_ESCAPE:
-					self.game.quit()
+					self.quit()
 
 	def doUpdate(self):
 		pygame.display.set_caption('Python Kinect Game %d fps' % clock.get_fps())
@@ -247,7 +246,7 @@ class Game(object):
 				self.ball.setPos(self.paddle.center, 550)
 				self.ball.balldy = random.choice([-1, -2])
 
-			if (self.ball.pos[1] + self.ball.radius >= 570 and self.ball.pos[0] >= self.paddle.rectlist[0] and self.ball.pos[0] <= self.paddle.rectlist[2]):
+			if (self.ball.pos[1] + self.ball.radius >= 580 and self.ball.pos[0] >= self.paddle.rectlist[0] and self.ball.pos[0] <= self.paddle.rectlist[0] + self.paddle.rectlist[2]):
 				self.angle = math.atan2(self.ball.balldx, self.ball.balldy)
 				if (self.isCollided == False):
 					self.isCollided = True
@@ -298,7 +297,7 @@ class Game(object):
 			self.doUpdate()
 
 			pygame.display.flip()
-			clock.tick(40)
+			clock.tick(80)
 
 if __name__ == '__main__':
 	# Initialize PyGame
