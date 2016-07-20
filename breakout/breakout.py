@@ -256,12 +256,12 @@ class Game(object):
 
 					elif (self.ball.pos[0] < self.paddle.center):
 						self.angle = 90 - 14/3 * (self.paddle.center - self.ball.pos[0])
-						self.ball.balldy = math.sin(self.angle) * self.ball.speed
+						self.ball.balldy = -1 * math.sin(self.angle) * self.ball.speed
 						self.ball.balldx = math.cos(self.angle) * self.ball.speed
 
 					elif (self.ball.pos[0] > self.paddle.center):
 						self.angle = 90 + 14/3 * (self.ball.pos[0] - self.paddle.center)
-						self.ball.balldy = math.sin(self.angle) * self.ball.speed
+						self.ball.balldy = -1 * math.sin(self.angle) * self.ball.speed
 						self.ball.balldx = math.cos(self.angle) * self.ball.speed
 			else:
 				self.isCollided = False
