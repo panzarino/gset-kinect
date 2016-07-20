@@ -342,9 +342,9 @@ t = datetime.now()
 myfont2 = pygame.font.SysFont("monospace", 80, bold = True)
 
 posA = center(myfont2, "SCORE:", 0, 0, 640, 240)
-posB = center(myfont2, str(int(score)), 0, 0, 640, 240)
-pos2A = center(myfont2, "NET SCORE:", 0, 0, 640, 480)
-pos2B = center(myfont2, str(int(net_score)), 0, 240, 640, 240)
+posB = center(myfont2, str(int(score)), 0, 240, 640, 480)
+pos2A = center(myfont2, "NET SCORE:", 0, 0, 640, 240)
+pos2B = center(myfont2, str(int(net_score)), 0, 240, 640, 480)
 
 pygame.mixer.music.load(maple_leaf_rag)
 pygame.mixer.music.play(0)
