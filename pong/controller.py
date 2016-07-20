@@ -112,7 +112,6 @@ class Controller(object):
 		self.left_score_x = self.game_middle_x - font_size
 		self.right_score_x = self.game_middle_x + font_size/3
 		self.score_y = 16
-		kinect = nui.Runtime()
 		kinect.camera.elevation_angle = -2
 		kinect.skeleton_engine.enabled = True
 		kinect.skeleton_frame_ready += post_frame
