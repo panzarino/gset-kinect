@@ -7,6 +7,7 @@ import math
 import random
 import time
 from pykinect import nui
+from pykinect.nui import JointId, SkeletonTrackingState
 import ctypes
 import thread
 
@@ -95,6 +96,15 @@ clock = pygame.time.Clock()
 
 class Game(object):
 	def __init__(self):
+
+		kinect = nui.Runtime()
+		kinect.camera.elevation_angle = -2
+		kinect.skeleton_engine.enabled = True
+		kinect.skeleton_frame_ready += post_frame
+		kinect.video_frame_ready += video_frame_ready    
+		kinect.video_stream.open(nui.ImageStreamType.Video, 2, 
+                                      nui.ImageResolution.Resolution640x480, 
+                                      nui.ImageType.Color)
 		self.screensize = get_screen_size()
 		self.screen = pygame.display.set_mode(self.screensize, pygame.FULLSCREEN)
 		pygame.mouse.set_visible(False)
@@ -182,10 +192,10 @@ class Game(object):
 
 			if (self.ball.pos[1] >= 610):
 				self.numBalls -= 1
-				self.ball.setPos(self.paddle.center, 540)
+				self.ball.setPos(self.paddle.center, 550)
 				self.ball.balldy = random.choice([-1, -2])
 
-			if (self.ball.pos[1] + self.ball.radius >= 580 and self.ball.pos[0] >= self.paddle.center - 100 and self.ball.pos[0] <= self.paddle.center + 100):
+			if (self.ball.pos[1] + self.ball.radius >= 570 and self.ball.pos[0] >= self.paddle.rectlist[0] and self.ball.pos[0] <= self.paddle.rectlist[2]):
 				self.angle = math.atan2(self.ball.balldx, self.ball.balldy)
 				if (self.isCollided == False):
 					self.isCollided = True
@@ -193,14 +203,14 @@ class Game(object):
 						self.ball.balldx = 0.1
 						self.ball.balldy *= -1
 
-					if (self.ball.pos[0] < self.paddle.center):
+					elif (self.ball.pos[0] < self.paddle.center):
 						self.angle = 90 - 14/3 * (self.paddle.center - self.ball.pos[0])
-						self.ball.balldy = -math.sin(self.angle) * self.ball.speed
+						self.ball.balldy = math.sin(self.angle) * self.ball.speed
 						self.ball.balldx = math.cos(self.angle) * self.ball.speed
 
-					if (self.ball.pos[0] > self.paddle.center):
+					elif (self.ball.pos[0] > self.paddle.center):
 						self.angle = 90 + 14/3 * (self.ball.pos[0] - self.paddle.center)
-						self.ball.balldy = -math.sin(self.angle) * self.ball.speed
+						self.ball.balldy = math.sin(self.angle) * self.ball.speed
 						self.ball.balldx = math.cos(self.angle) * self.ball.speed
 			else:
 				self.isCollided = False
