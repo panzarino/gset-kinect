@@ -106,6 +106,7 @@ if legs:
     right_foot_pos = (0.0, 0.0)
 
 def draw_skeleton_data(pSkelton, index, positions, width = 4):
+    global screen
     start = pSkelton.SkeletonPositions[positions[0]]
        
     for position in itertools.islice(positions, 1, None):
@@ -149,6 +150,7 @@ def center(font, string, w, x, y, z):
     return (width, height)
 
 def draw_skeletons(skeletons):
+    global screen
     for x, data in enumerate(skeletons):
         # draw the Head
         HeadPos = skeleton_to_depth_image(data.SkeletonPositions[JointId.Head], dispInfo.current_w, dispInfo.current_h) 
@@ -162,6 +164,8 @@ def draw_skeletons(skeletons):
         draw_skeleton_data(data, index, RIGHT_LEG)
 
 def video_frame_ready(frame):
+    global screen_lock
+    global screen
     with screen_lock:
         address = surface_to_array(screen)
         frame.image.copy_bits(address)
@@ -173,6 +177,7 @@ def get_change(x1, y1, x2, y2):
     return math.sqrt((x1 - x2)**2 + (y1 - y2)**2)
 
 def draw_score():
+    global screen
     p = center(myfont, str(int(round_score)), 0, 0, 160, 120)
     p1 = center(myfont, str(num_players) + "-P", 480, 0, 640, 120)
     screen.unlock()
@@ -184,6 +189,7 @@ def draw_score():
         screen.unlock()
 
 def display_box():
+    global screen
     rect = Rect(0, 0, 160, 120)
     rect2 = Rect(480, 0, 640, 120)
     if index == 1:
@@ -250,6 +256,7 @@ def score_update(e, t):
         return score_change
 
 def end():
+    global screen
     t = datetime.now()
 
     myfont2 = pygame.font.SysFont("monospace", 80, bold = True)
@@ -286,7 +293,7 @@ def end():
 def main():
     global screen_lock
     global screen
-
+    global skeletons
 
 
     full_screen = False
