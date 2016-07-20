@@ -275,7 +275,7 @@ def end():
         pygame.Surface.fill(screen, (0, 0, 0), rect3)
         try:
             screen.blit(myfont2.render("SCORE:", True, (255, 255, 255)), posA)
-            screen.blit(myfont2.render(str(int(score)), True, (255, 255, 255)), posBB)
+            screen.blit(myfont2.render(str(int(score)), True, (255, 255, 255)), posB)
             pygame.display.update()
         except pygame.error:
             screen.unlock()
