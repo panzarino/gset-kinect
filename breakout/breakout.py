@@ -24,6 +24,58 @@ def get_screen_size():
 	user32 = ctypes.windll.user32
 	return user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
 
+def surface_to_array(surface):
+   buffer_interface = surface.get_buffer()
+   address = ctypes.c_void_p()
+   size = Py_ssize_t()
+   _PyObject_AsWriteBuffer(buffer_interface,
+                          ctypes.byref(address), ctypes.byref(size))
+   bytes = (ctypes.c_byte * size.value).from_address(address.value)
+   bytes.object = buffer_interface
+   return bytes
+
+def draw_skeletons(skeletons):
+    for index, data in enumerate(skeletons):
+        # draw the Head
+        HeadPos = skeleton_to_depth_image(data.SkeletonPositions[JointId.Head], dispInfo.current_w, dispInfo.current_h) 
+        draw_skeleton_data(data, index, SPINE, 10)
+        pygame.draw.circle(screen, SKELETON_COLORS[index], (int(HeadPos[0]), int(HeadPos[1])), 20, 0)
+        # drawing the limbs
+        draw_skeleton_data(data, index, LEFT_ARM)
+        draw_skeleton_data(data, index, RIGHT_ARM)
+        draw_skeleton_data(data, index, LEFT_LEG)
+        draw_skeleton_data(data, index, RIGHT_LEG)
+
+
+def depth_frame_ready(frame):
+    if video_display:
+        return
+    with screen_lock:
+        address = surface_to_array(screen)
+        frame.image.copy_bits(address)
+        del address
+        if skeletons is not None and draw_skeleton:
+            draw_skeletons(skeletons)
+        pygame.display.update()    
+
+
+def video_frame_ready(frame):
+    if not video_display:
+        return
+    with screen_lock:
+        address = surface_to_array(screen)
+        frame.image.copy_bits(address)
+        del address
+        if skeletons is not None and draw_skeleton:
+            draw_skeletons(skeletons)
+        pygame.display.update()
+
+def post_frame(frame):
+    try:
+        pygame.event.post(pygame.event.Event(KINECTEVENT, skeletons = frame.SkeletonData))
+    except:
+        pass
+
 class Paddle(object):
 	def __init__(self, screen, color, x, y, length, width, outline=0):
 		self.screen = screen
@@ -96,8 +148,6 @@ clock = pygame.time.Clock()
 
 class Game(object):
 	def __init__(self):
-
-		kinect = nui.Runtime()
 		kinect.camera.elevation_angle = -2
 		kinect.skeleton_engine.enabled = True
 		kinect.skeleton_frame_ready += post_frame
@@ -149,12 +199,15 @@ class Game(object):
 
 	def go(self):
 		# move paddles to kinect locations
+		print("test1")
 		events = pygame.event.get()
 		for e in events:
 			if e.type == KINECTEVENT:
+				print("test2")
 				for skeleton in e.skeletons:
 					head = skeleton.SkeletonPositions[JointId.Head]
-					if (not head.y==0):
+					if (not head.x==0):
+						print("test3")
 						xval = interp(head.x, [-.025,.30], [0,1])
 						xpos = (1-xval) * self.game.screensize[1]
 						self.paddle.move(xpos)
@@ -165,7 +218,6 @@ class Game(object):
 	def doUpdate(self):
 		pygame.display.set_caption('Python Kinect Game %d fps' % clock.get_fps())
 		self.screen.fill(THECOLORS["black"])
-		self.go()
 		self.ball.change()
 		self.paddle.change()
 		for m in self.pieces_group:
@@ -240,6 +292,8 @@ class Game(object):
 			self.totalx = self.ball.pos[0] + self.ball.balldx
 			self.totaly = self.ball.pos[1] + self.ball.balldy
 			self.ball.setPos(int(self.totalx), int(self.totaly))
+
+			self.go()
 
 			self.doUpdate()
 
