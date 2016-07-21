@@ -175,56 +175,18 @@ class Game(object):
 		self.background.fill(THECOLORS["black"])
 		self.background.convert()
 
-		block1 = Block(self.screen, THECOLORS["white"], 60, 300, 60, 60, True)
-		block2 = Block(self.screen, THECOLORS["white"], 120, 300, 60, 60, True)
-		block3 = Block(self.screen, THECOLORS["white"], 180, 300, 60, 60, True)
-		block4 = Block(self.screen, THECOLORS["white"], 240, 300, 60, 60, True)
-		block5 = Block(self.screen, THECOLORS["white"], 60, 300, 60, 60, True)
-		block6 = Block(self.screen, THECOLORS["white"], 60, 240, 60, 60, True)
-		block7 = Block(self.screen, THECOLORS["white"], 60, 180, 60, 60, True)
-		block8 = Block(self.screen, THECOLORS["white"], 60, 120, 60, 60, True)
-		block9 = Block(self.screen, THECOLORS["white"], 120, 120, 60, 60, True)
-		block10 = Block(self.screen, THECOLORS["white"], 180, 120, 60, 60, True)
-		block11 = Block(self.screen, THECOLORS["white"], 240, 120, 60, 60, True)
-		block12 = Block(self.screen, THECOLORS["white"], 240, 180, 60, 60, True)	# reverse to match pygame library
-		block13 = Block(self.screen, THECOLORS["white"], 240, 240, 60, 60, True)
-		block14 = Block(self.screen, THECOLORS["white"], 180, 240, 60, 60, True)
+		block2 = Block(self.screen, THECOLORS["green"], 360, 60, 120, 60, True)
+		block7 = Block(self.screen, THECOLORS["pink"], 360, 120, 120, 60, True)
+		block3 = Block(self.screen, THECOLORS["yellow"], 360, 180, 120, 60, True)
+		block1 = Block(self.screen, THECOLORS["blue"], 480, 60, 120, 60, True)
+		block9 = Block(self.screen, THECOLORS["tan"], 480, 180, 120, 60, True)
+		block4 = Block(self.screen, THECOLORS["orange"], 600, 60, 120, 60, True)
+		block8 = Block(self.screen, THECOLORS["grey"], 600, 180, 120, 60, True)
+		block5 = Block(self.screen, THECOLORS["red"], 720, 60, 120, 60, True)
+		block6 = Block(self.screen, THECOLORS["purple"], 720, 120, 120, 60, True)
+		block10 = Block(self.screen, THECOLORS["white"], 720, 180, 120, 60, True)
 
-		block15 = Block(self.screen, THECOLORS["white"], 60, 50, 10, 10, True)
-		block16 = Block(self.screen, THECOLORS["white"], 70, 50, 10, 10, True)
-		block17 = Block(self.screen, THECOLORS["white"], 80, 50, 10, 10, True)
-		block18 = Block(self.screen, THECOLORS["white"], 60, 40, 10, 10, True)	# reverse to match pygame library
-		block19 = Block(self.screen, THECOLORS["white"], 60, 30, 10, 10, True)
-		block20 = Block(self.screen, THECOLORS["white"], 70, 30, 10, 10, True)
-		block21 = Block(self.screen, THECOLORS["white"], 80, 30, 10, 10, True)
-		block22 = Block(self.screen, THECOLORS["white"], 80, 20, 10, 10, True)	# reverse to match pygame library
-		block23 = Block(self.screen, THECOLORS["white"], 80, 10, 10, 10, True)
-		block24 = Block(self.screen, THECOLORS["white"], 70, 10, 10, 10, True)
-		block25 = Block(self.screen, THECOLORS["white"], 60, 10, 10, 10, True)
-
-		block26 = Block(self.screen, THECOLORS["white"], 100, 50, 10, 10, True)
-		block27 = Block(self.screen, THECOLORS["white"], 110, 50, 10, 10, True)
-		block28 = Block(self.screen, THECOLORS["white"], 120, 50, 10, 10, True)
-		block29 = Block(self.screen, THECOLORS["white"], 100, 40, 10, 10, True)
-		block30 = Block(self.screen, THECOLORS["white"], 100, 30, 10, 10, True)
-		block31 = Block(self.screen, THECOLORS["white"], 110, 30, 10, 10, True)
-		block32 = Block(self.screen, THECOLORS["white"], 120, 30, 10, 10, True)
-		block33 = Block(self.screen, THECOLORS["white"], 100, 20, 10, 10, True)
-		block34 = Block(self.screen, THECOLORS["white"], 100, 10, 10, 10, True)
-		block35 = Block(self.screen, THECOLORS["white"], 110, 10, 10, 10, True)
-		block36 = Block(self.screen, THECOLORS["white"], 120, 10, 10, 10, True)
-
-		block37 = Block(self.screen, THECOLORS["white"], 140, 50, 10, 10, True)	# reverse to match pygame library
-		block38 = Block(self.screen, THECOLORS["white"], 150, 50, 10, 10, True)	# reverse to match pygame library
-		block39 = Block(self.screen, THECOLORS["white"], 160, 50, 10, 10, True)
-		block40 = Block(self.screen, THECOLORS["white"], 170, 50, 10, 10, True)	# reverse to match pygame library
-		block41 = Block(self.screen, THECOLORS["white"], 180, 50, 10, 10, True)	# reverse to match pygame library
-		block42 = Block(self.screen, THECOLORS["white"], 160, 40, 10, 10, True)
-		block43 = Block(self.screen, THECOLORS["white"], 160, 30, 10, 10, True)
-		block44 = Block(self.screen, THECOLORS["white"], 160, 20, 10, 10, True)
-		block45 = Block(self.screen, THECOLORS["white"], 160, 10, 10, 10, True)
-
-		self.pieces_group = (block1, block2, block3, block4, block5, block6, block7, block8, block9, block10, block11, block12, block13, block14, block15, block16, block17, block18, block19, block20, block21, block22, block23, block24, block25, block26, block27, block28, block29, block30, block31, block32, block33, block34, block35, block36, block37, block38, block39, block40, block41, block42, block43, block44, block45)
+		self.pieces_group = (block1, block2, block3, block4, block5, block6, block7, block8, block9, block10)
 
 		self.image1 = pygame.SurfaceType((15, 40))
 		pygame.draw.rect(self.image1, THECOLORS["red"], pygame.Rect(0, 0, 90, 6))
@@ -293,7 +255,7 @@ class Game(object):
 				if (self.isCollided == False):
 					self.isCollided = True
 					if (self.ball.pos[0] == self.paddle.center):
-						self.angle = 90 + 5 * (self.paddle.center - self.ball.pos[0])
+						self.angle = 90 + 5 * (self.paddle.center - self.ball.pos[0]) + 15
 						self.ball.balldy = -abs(math.sin(math.radians(self.angle)) * self.ball.speed)
 						self.ball.balldx = -math.cos(math.radians(self.angle)) * self.ball.speed
 
