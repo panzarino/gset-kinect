@@ -351,7 +351,7 @@ pos2B = center(myfont2, str(int(net_score)), 0, 640, 1280, 512)
 pygame.mixer.music.load(maple_leaf_rag)
 pygame.mixer.music.play(0)
 
-nui.close()
+#nui.close()
 
 while((datetime.now() - t).seconds = 5)
     rect3 = (0, 0, 1280, 1024)
