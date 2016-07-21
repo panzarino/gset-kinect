@@ -120,9 +120,9 @@ def draw_skeleton_data(pSkelton, index, positions, width = 4):
         start = next
 
 # recipe to get address of surface: http://archives.seul.org/pygame/users/Apr-2008/msg00218.html
-if hasattr(ctypes.pythonapi, 'Py_InitModule4'):
+if hasattr(ctypes.pythonapi, "Py_InitModule4"):
     Py_ssize_t = ctypes.c_int
-elif hasattr(ctypes.pythonapi, 'Py_InitModule4_64'):
+elif hasattr(ctypes.pythonapi, "Py_InitModule4_64"):
     Py_ssize_t = ctypes.c_int64
 else:
     raise TypeError("Cannot determine type of Py_ssize_t")
@@ -252,7 +252,7 @@ def score_update(e, t):
         return score_change
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     full_screen = False
 
     pygame.mixer.music.load(maple_leaf_rag)
@@ -264,7 +264,7 @@ if __name__ == '__main__':
 
     screen = pygame.display.set_mode(VIDEO_WINSIZE,0,32)
     screen.unlock()
-    pygame.display.set_caption('Red Light, Green Light')
+    pygame.display.set_caption("Red Light, Green Light")
     skeletons = None
     screen.fill(THECOLORS["black"])
 
