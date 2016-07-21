@@ -98,6 +98,7 @@ time_c = datetime.now()
 time_s = datetime.now()
 original_time = datetime.now()
 time_p = datetime.now()
+
 if arms:
     left_hand_pos = (0.0, 0.0)
     right_hand_pos = (0.0, 0.0)
@@ -109,8 +110,8 @@ def draw_skeleton_data(pSkelton, index, positions, width = 4):
     start = pSkelton.SkeletonPositions[positions[0]]
        
     for position in itertools.islice(positions, 1, None):
-        next = pSkelton.SkeletonPositions[position.value]
-        
+        next = pSkelton.SkeletonPositions[position.value]  
+
         curstart = skeleton_to_depth_image(start, dispInfo.current_w, dispInfo.current_h) 
         curend = skeleton_to_depth_image(next, dispInfo.current_w, dispInfo.current_h)
 
@@ -120,32 +121,33 @@ def draw_skeleton_data(pSkelton, index, positions, width = 4):
 
 # recipe to get address of surface: http://archives.seul.org/pygame/users/Apr-2008/msg00218.html
 if hasattr(ctypes.pythonapi, 'Py_InitModule4'):
-   Py_ssize_t = ctypes.c_int
+    Py_ssize_t = ctypes.c_int
 elif hasattr(ctypes.pythonapi, 'Py_InitModule4_64'):
-   Py_ssize_t = ctypes.c_int64
+    Py_ssize_t = ctypes.c_int64
 else:
-   raise TypeError("Cannot determine type of Py_ssize_t")
+    raise TypeError("Cannot determine type of Py_ssize_t")
 
 _PyObject_AsWriteBuffer = ctypes.pythonapi.PyObject_AsWriteBuffer
 _PyObject_AsWriteBuffer.restype = ctypes.c_int
 _PyObject_AsWriteBuffer.argtypes = [ctypes.py_object,
-                                  ctypes.POINTER(ctypes.c_void_p),
-                                  ctypes.POINTER(Py_ssize_t)]
+                                    ctypes.POINTER(ctypes.c_void_p),
+                                    ctypes.POINTER(Py_ssize_t)]
 
 def surface_to_array(surface):
-   buffer_interface = surface.get_buffer()
-   address = ctypes.c_void_p()
-   size = Py_ssize_t()
-   _PyObject_AsWriteBuffer(buffer_interface,
-                          ctypes.byref(address), ctypes.byref(size))
-   bytes = (ctypes.c_byte * size.value).from_address(address.value)
-   bytes.object = buffer_interface
-   return bytes
+    buffer_interface = surface.get_buffer()
+    address = ctypes.c_void_p()
+    size = Py_ssize_t()
+    _PyObject_AsWriteBuffer(buffer_interface,
+                            ctypes.byref(address), 
+                            ctypes.byref(size))
+    bytes = (ctypes.c_byte * size.value).from_address(address.value)
+    bytes.object = buffer_interface
+    return bytes
 
-def center(font, string, w, x, y, z):
+def center(font, string, x1, y1, x2, y2):
     dim = font.size(string)
-    width = w + (y - w - dim[0]) / 2
-    height = x + (z - x - dim[1]) / 2
+    width = x1 + (x2 - x1 - dim[0]) / 2
+    height = y1 + (y2 - y1 - dim[1]) / 2
     return (width, height)
 
 def draw_skeletons(skeletons):
