@@ -48,7 +48,6 @@ def draw_skeletons(skeletons):
         draw_skeleton_data(data, index, LEFT_LEG)
         draw_skeleton_data(data, index, RIGHT_LEG)
 
-
 def depth_frame_ready(frame):
     if video_display:
         return
@@ -59,7 +58,6 @@ def depth_frame_ready(frame):
         if skeletons is not None and draw_skeleton:
             draw_skeletons(skeletons)
         pygame.display.update()    
-
 
 def video_frame_ready(frame):
     if not video_display:
@@ -176,31 +174,31 @@ class Game(object):
 		self.background.convert()
 
 		block19 = Block(self.screen, THECOLORS["red"], 120, 60, 120, 60, True)
-		block20 = Block(self.screen, THECOLORS["yellow"], 120, 120, 120, 60, True)
+		block20 = Block(self.screen, THECOLORS["green"], 120, 120, 120, 60, True)
 		block21 = Block(self.screen, THECOLORS["blue"], 120, 180, 120, 60, True)
 		block13 = Block(self.screen, THECOLORS["red"], 240, 60, 120, 60, True)
-		block14 = Block(self.screen, THECOLORS["yellow"], 240, 120, 120, 60, True)
+		block14 = Block(self.screen, THECOLORS["green"], 240, 120, 120, 60, True)
 		block15 = Block(self.screen, THECOLORS["blue"], 240, 180, 120, 60, True)
 		block2 = Block(self.screen, THECOLORS["red"], 360, 60, 120, 60, True)
-		block7 = Block(self.screen, THECOLORS["yellow"], 360, 120, 120, 60, True)
+		block7 = Block(self.screen, THECOLORS["green"], 360, 120, 120, 60, True)
 		block3 = Block(self.screen, THECOLORS["blue"], 360, 180, 120, 60, True)
 		block1 = Block(self.screen, THECOLORS["red"], 480, 60, 120, 60, True)
-		block11 = Block(self.screen, THECOLORS["yellow"], 480, 120, 120, 60, True)
+		block11 = Block(self.screen, THECOLORS["green"], 480, 120, 120, 60, True)
 		block9 = Block(self.screen, THECOLORS["blue"], 480, 180, 120, 60, True)
 		block4 = Block(self.screen, THECOLORS["red"], 600, 60, 120, 60, True)
-		block12 = Block(self.screen, THECOLORS["yellow"], 600, 120, 120, 60, True)
+		block12 = Block(self.screen, THECOLORS["green"], 600, 120, 120, 60, True)
 		block8 = Block(self.screen, THECOLORS["blue"], 600, 180, 120, 60, True)
 		block5 = Block(self.screen, THECOLORS["red"], 720, 60, 120, 60, True)
-		block6 = Block(self.screen, THECOLORS["yellow"], 720, 120, 120, 60, True)
+		block6 = Block(self.screen, THECOLORS["green"], 720, 120, 120, 60, True)
 		block10 = Block(self.screen, THECOLORS["blue"], 720, 180, 120, 60, True)
 		block16 = Block(self.screen, THECOLORS["red"], 840, 60, 120, 60, True)
-		block17 = Block(self.screen, THECOLORS["yellow"], 840, 120, 120, 60, True)
+		block17 = Block(self.screen, THECOLORS["green"], 840, 120, 120, 60, True)
 		block18 = Block(self.screen, THECOLORS["blue"], 840, 180, 120, 60, True)
 		block22 = Block(self.screen, THECOLORS["red"], 960, 60, 120, 60, True)
-		block23 = Block(self.screen, THECOLORS["yellow"], 960, 120, 120, 60, True)
+		block23 = Block(self.screen, THECOLORS["green"], 960, 120, 120, 60, True)
 		block24 = Block(self.screen, THECOLORS["blue"], 960, 180, 120, 60, True)
 
-		self.pieces_group = (block1, block2, block3, block4, block5, block6, block7, block8, block9, block10, block11, block12, block13, block14, block15, block16, block17, block18)
+		self.pieces_group = (block1, block2, block3, block4, block5, block6, block7, block8, block9, block10, block11, block12, block13, block14, block15, block16, block17, block18, block19, block20, block21, block22, block23, block24)
 
 		self.image1 = pygame.SurfaceType((15, 40))
 		pygame.draw.rect(self.image1, THECOLORS["red"], pygame.Rect(0, 0, 90, 6))
