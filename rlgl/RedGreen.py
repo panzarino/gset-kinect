@@ -370,5 +370,3 @@ while((datetime.now() - t).seconds <= 10):
     except pygame.error:
         screen.unlock()
 sys.exit()
-
-#Testing GitHub
