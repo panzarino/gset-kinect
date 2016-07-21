@@ -1,4 +1,4 @@
-# GSET
+# GSET Motion Control Gaming with Kinect
 
 Governor's School of Engineering and Technology Motion Control Gaming with Kinect
 
