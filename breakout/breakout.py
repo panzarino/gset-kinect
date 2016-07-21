@@ -175,20 +175,20 @@ class Game(object):
 		self.background.fill(THECOLORS["black"])
 		self.background.convert()
 
-		block1 = Block(self.screen, THECOLORS["white"], 10, 50, 10, 10, True)
-		block2 = Block(self.screen, THECOLORS["white"], 20, 50, 10, 10, True)
-		block3 = Block(self.screen, THECOLORS["white"], 30, 50, 10, 10, True)
-		block4 = Block(self.screen, THECOLORS["white"], 40, 50, 10, 10, True)
-		block5 = Block(self.screen, THECOLORS["white"], 10, 50, 10, 10, True)
-		block6 = Block(self.screen, THECOLORS["white"], 10, 40, 10, 10, True)
-		block7 = Block(self.screen, THECOLORS["white"], 10, 30, 10, 10, True)
-		block8 = Block(self.screen, THECOLORS["white"], 10, 20, 10, 10, True)
-		block9 = Block(self.screen, THECOLORS["white"], 20, 20, 10, 10, True)
-		block10 = Block(self.screen, THECOLORS["white"], 30, 20, 10, 10, True)
-		block11 = Block(self.screen, THECOLORS["white"], 40, 20, 10, 10, True)
-		block12 = Block(self.screen, THECOLORS["white"], 40, 30, 10, 10, True)	# reverse to match pygame library
-		block13 = Block(self.screen, THECOLORS["white"], 40, 40, 10, 10, True)
-		block14 = Block(self.screen, THECOLORS["white"], 30, 40, 10, 10, True)
+		block1 = Block(self.screen, THECOLORS["white"], 60, 300, 60, 60, True)
+		block2 = Block(self.screen, THECOLORS["white"], 120, 300, 60, 60, True)
+		block3 = Block(self.screen, THECOLORS["white"], 180, 300, 60, 60, True)
+		block4 = Block(self.screen, THECOLORS["white"], 240, 300, 60, 60, True)
+		block5 = Block(self.screen, THECOLORS["white"], 60, 300, 60, 60, True)
+		block6 = Block(self.screen, THECOLORS["white"], 60, 240, 60, 60, True)
+		block7 = Block(self.screen, THECOLORS["white"], 60, 180, 60, 60, True)
+		block8 = Block(self.screen, THECOLORS["white"], 60, 120, 60, 60, True)
+		block9 = Block(self.screen, THECOLORS["white"], 120, 120, 60, 60, True)
+		block10 = Block(self.screen, THECOLORS["white"], 180, 120, 60, 60, True)
+		block11 = Block(self.screen, THECOLORS["white"], 240, 120, 60, 60, True)
+		block12 = Block(self.screen, THECOLORS["white"], 240, 180, 60, 60, True)	# reverse to match pygame library
+		block13 = Block(self.screen, THECOLORS["white"], 240, 240, 60, 60, True)
+		block14 = Block(self.screen, THECOLORS["white"], 180, 240, 60, 60, True)
 
 		block15 = Block(self.screen, THECOLORS["white"], 60, 50, 10, 10, True)
 		block16 = Block(self.screen, THECOLORS["white"], 70, 50, 10, 10, True)
@@ -331,8 +331,6 @@ class Game(object):
 						m.exists = False
 						check = False
 
-			print(self.ball.balldx)
-			print(self.ball.balldy)
 			if (abs(self.ball.balldy) < 1):
 				if (self.ball.balldy < 0):
 					self.ball.balldy = -1
