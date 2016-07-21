@@ -255,7 +255,7 @@ class Game(object):
 				if (self.isCollided == False):
 					self.isCollided = True
 					if (self.ball.pos[0] == self.paddle.center):
-						self.angle = 90 + 5 * (self.paddle.center - self.ball.pos[0])
+						self.angle = 90 + 5 * (self.paddle.center - self.ball.pos[0]) + 15
 						self.ball.balldy = -abs(math.sin(math.radians(self.angle)) * self.ball.speed)
 						self.ball.balldx = -math.cos(math.radians(self.angle)) * self.ball.speed
 
@@ -293,6 +293,8 @@ class Game(object):
 						m.exists = False
 						check = False
 
+			if (self.ball.balldy == 0):
+				self.ball.balldy = 1
 			self.totalx = self.ball.pos[0] + self.ball.balldx
 			self.totaly = self.ball.pos[1] + self.ball.balldy
 			self.ball.setPos(int(self.totalx), int(self.totaly))
