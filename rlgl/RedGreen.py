@@ -353,7 +353,7 @@ pygame.mixer.music.play(0)
 
 #nui.close()
 
-while((datetime.now() - t).seconds <= 5):
+while((datetime.now() - t).seconds <= 3):
     rect3 = (0, 0, 640, 480)
     screen.unlock()
     pygame.Surface.fill(screen, (0, 0, 0), rect3)
@@ -363,7 +363,7 @@ while((datetime.now() - t).seconds <= 5):
         pygame.display.update()
     except pygame.error:
         screen.unlock()
-while((datetime.now() - t).seconds <= 10):
+while((datetime.now() - t).seconds <= 6):
     rect3 = (0, 0, 640, 480)
     screen.unlock()
     pygame.Surface.fill(screen, (0, 0, 0), rect3)
