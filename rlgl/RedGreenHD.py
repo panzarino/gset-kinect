@@ -23,7 +23,7 @@ import random
 
 import pygame
 from pygame.color import THECOLORS
-from pygame.locals import 
+from pygame.locals import *
 from pygame.mixer import music
 
 KINECTEVENT = pygame.USEREVENT
